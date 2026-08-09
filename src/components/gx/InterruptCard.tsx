@@ -1,0 +1,41 @@
+import type { PolicyOutcome } from "@/lib/spend-policy";
+import type { AgentOrder } from "./useAgentRun";
+
+export function InterruptCard({
+  order,
+  outcome,
+  amountLabel,
+  onAnswer,
+}: {
+  order: AgentOrder;
+  outcome: PolicyOutcome;
+  amountLabel?: string;
+  onAnswer: (approved: boolean) => void;
+}) {
+  return (
+    <div className="rounded-2xl border border-amber-500/50 bg-amber-500/10 p-5 space-y-3">
+      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-300">
+        Task state · input-required
+      </p>
+      <p className="text-sm font-bold text-foreground">
+        The agent wants to buy {order.quantity} × {order.title}
+        {amountLabel ? ` for ${amountLabel}` : ""}.
+      </p>
+      <p className="text-xs leading-relaxed text-amber-100/80">{outcome.reason}</p>
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => onAnswer(true)}
+          className="rounded-full bg-primary px-5 py-2 text-xs font-bold text-primary-foreground hover:bg-primary/85"
+        >
+          Approve spend
+        </button>
+        <button
+          onClick={() => onAnswer(false)}
+          className="rounded-full border border-border px-5 py-2 text-xs font-bold text-foreground hover:bg-background/40"
+        >
+          Reject
+        </button>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,40 @@
+import { TreasuryCard } from "@/components/dance/TreasuryCard";
+import { MintForm } from "@/components/dance/MintForm";
+import { MoveNftGallery } from "@/components/dance/MoveNftGallery";
+import { ReceiptHistoryPanel } from "@/components/dance/ReceiptHistoryPanel";
+
+import { SectionHead } from "@/components/layout/Section";
+import { Reveal } from "@/components/layout/Reveal";
+
+export function MoveRegistry({
+  treasuryAddress,
+  eyebrow = "Marketplace for moves",
+  title = "License a move",
+  blurb = "Beyond the merch: register choreography on Midnight MoveRegistry (Compact). Prove, append the CID, verify via the local indexer.",
+}: {
+  treasuryAddress: string;
+  eyebrow?: string;
+  title?: string;
+  blurb?: string;
+}) {
+  return (
+    <div className="grid min-w-0 gap-10 lg:grid-cols-[0.85fr_1fr] lg:items-start">
+      <Reveal className="min-w-0">
+        <div className="min-w-0 lg:sticky lg:top-28">
+          <SectionHead eyebrow={eyebrow} title={title} blurb={blurb} />
+          <div className="mt-8">
+            <TreasuryCard address={treasuryAddress} />
+          </div>
+        </div>
+      </Reveal>
+      <Reveal delay={120} className="min-w-0">
+        <div className="min-w-0 space-y-6">
+          <MintForm />
+          <MoveNftGallery />
+          <ReceiptHistoryPanel />
+
+        </div>
+      </Reveal>
+    </div>
+  );
+}

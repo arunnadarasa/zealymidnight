@@ -1,0 +1,32 @@
+{
+  "network": "undeployed",
+  "deployedAt": "2026-08-09T21:14:38.066Z",
+  "address": "67656a55a432b649733393f7a9267f05555ac6e04f9f3e4c6fbacd7000164787",
+  "privateStateId": "streetrail-midnight-state-move-registry",
+  "contracts": {
+    "moveRegistry": {
+      "name": "move-registry",
+      "address": "67656a55a432b649733393f7a9267f05555ac6e04f9f3e4c6fbacd7000164787",
+      "deployTx": "5ae8f8bfb0d4ddcc65601d6a8e8d83ca6c1166de4327980cf7bc262b551447a5",
+      "privateStateId": "streetrail-midnight-state-move-registry"
+    },
+    "mandateVault": {
+      "name": "mandate-vault",
+      "address": "8e98a46e6bf2fbe1b6c0e8014fd2f72cde30b88bbfe03da9bd1399ca06464ab6",
+      "deployTx": "dca8f7929458f27a8b46ad165d0f95389eb5f08a429a627705de64f7b0559a11",
+      "privateStateId": "streetrail-midnight-state-mandate-vault"
+    },
+    "orderLedger": {
+      "name": "order-ledger",
+      "address": "0cbe58c96e36d55179cf7cb747bd85988597fef97f48a92dbf51e1a292bbf786",
+      "deployTx": "4bafa6ee454108bb9b2521937a807bd8a7d3267a19328dce153a25102ad3750c",
+      "privateStateId": "streetrail-midnight-state-order-ledger"
+    },
+    "midnightUsdc": {
+      "name": "midnight-usdc",
+      "address": "7e520256c88e40c91b8b1dbdefa5efeab281b71dd2f4c9485cc66891f368c472",
+      "deployTx": "3bb5ee7ea336c9097fe3fc0c7997079d58e473c651d12a25c2bc13040a5569c3",
+      "privateStateId": "streetrail-midnight-state-midnight-usdc"
+    }
+  }
+}
