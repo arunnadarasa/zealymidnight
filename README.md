@@ -47,8 +47,8 @@ bun run dev       # http://localhost:8080/
 
 Open the app (Lace on **Undeployed** is optional — writes go through server-append), then:
 
-1. **Prove & append** a move on `/moves` (`appendEntry`; first proof can take ~4 minutes cold)
-2. **Mint** a Move Rights NFT from the same form (server `move-nft-mint`)
+1. **Preview metadata** on `/moves` (optional: pin a move clip to IPFS via Pinata — see below)
+2. **Prove & append** + **mint** MoveNft from the same form (`appendEntry` + `move-nft-mint`; first proof can take ~4 minutes cold)
 3. **List / buy** on `/market` with experimental mUSDC
 4. Verify with GraphQL at `http://localhost:8088/api/v4/graphql`
 
@@ -74,12 +74,30 @@ VITE_NODE_URL=http://localhost:9944
 VITE_DEFAULT_CONTRACT=<from deploy>
 ```
 
-Optional Pinata (server-only — never `VITE_PINATA_*`):
+### Pinata / IPFS move clips
+
+Clip upload is **chain-agnostic** (HTTP to Pinata) and already wired into the Midnight `/moves` form via `MetadataPreview` / `ClipPreview`. The CID is disclosed on MoveRegistry and stored as the MoveNft local `uri` — nothing Pinata-specific runs inside Compact.
+
+Add to `.env` (**never** `VITE_PINATA_*` — that leaks the JWT to the browser / breaks Cloudflare Worker builds):
 
 ```
-PINATA_JWT=...
-PINATA_GATEWAY=...
+PINATA_JWT=...          # Pinata API key with pinFileToIPFS + pinJSONToIPFS
+PINATA_GATEWAY=...      # optional dedicated gateway host
 ```
+
+Then **restart** `bun run dev` so the server process reloads env. Confirm:
+
+```bash
+curl -s http://localhost:8080/api/public/pin
+# → {"enabled":true,"gateway":"https://gateway.pinata.cloud/ipfs","maxBytes":26214400,...}
+```
+
+| With `PINATA_JWT` | Without |
+| --- | --- |
+| Step 1 shows **Move clip (optional evidence)** — MP4/MOV/WebM or image, max 25 MB | Clip field hidden |
+| Pin clip → pin metadata JSON → confirmed CID resolves on the gateway | Local CIDv1 preview still works; paste/confirm CID manually |
+
+Flow: stage clip in-browser (local UnixFS hash) → `POST /api/public/pin` → pin metadata JSON → confirm CID → Prove & append / mint.
 
 ### Docker pins
 
@@ -128,6 +146,7 @@ Never mix new verifier keys with an old LevelDB or old on-chain state (RpcError 
 | `POST /api/public/move-nft-buy` | mUSDC pay + MoveNft `buy` |
 | `POST /api/public/move-nft-cancel` | MoveNft `cancel` |
 | `POST /api/public/move-nft-transfer` | MoveNft `transfer` |
+| `GET` / `POST /api/public/pin` | Pinata status + clip/file pin (requires `PINATA_JWT`) |
 | `POST /api/public/ap2-anchor` | MandateVault `anchorMandate` |
 | `POST /api/public/ucp-record-order` | OrderLedger `recordOrder` |
 | `POST /api/public/musdc-faucet` | MidnightUSDC `faucet` |
@@ -160,6 +179,7 @@ Full write-up: [`Cursor Input.md`](./Cursor%20Input.md).
 - **Deploy JSON over env** — Vite caches `VITE_*` across redeploys; resolve addresses from `src/data/midnight-contract.undeployed.json` first.
 - **Server-append only on Undeployed** — don’t half-wire Lace signing locally.
 - **UI off the Arc pause path** — market/gallery/activity use Midnight + indexer when `VITE_NETWORK_ID=undeployed`.
+- **Pinata stays server-only** — same clip UX as Arc; `PINATA_JWT` enables `/moves` upload without touching Compact. Restart Vite after adding the JWT; check `GET /api/public/pin` → `enabled: true`.
 
 ### Traps to avoid
 
@@ -170,6 +190,7 @@ Full write-up: [`Cursor Input.md`](./Cursor%20Input.md).
 | RpcError **196** | Verifier key mismatch (recompile artefacts without redeploy) |
 | “not owner” while local ledger looks fine | Owner PK must be `sha256("movenft:owner:v1:" + label)`, not raw `sha256(label)` |
 | Mint to a dead contract | Stale Vite env — restart after deploy |
+| Clip upload field missing | `PINATA_JWT` unset, mistyped as `VITE_PINATA_*`, or Vite not restarted after `.env` change |
 | Flaky e2e / truncated logs | Parallel agents `pkill`ing shared processes, or piping proves through `awk`/`head` (SIGPIPE) |
 
 ### Do differently next time
