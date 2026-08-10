@@ -45,6 +45,7 @@ export function A2hHome() {
   const [loading, setLoading] = useState(true);
   const [chainError, setChainError] = useState<string | null>(null);
   const [rawAll, setRawAll] = useState(false);
+  const [railBusy, setRailBusy] = useState(false);
 
 
   const getFx = useServerFn(fetchFxRates);
@@ -217,20 +218,38 @@ export function A2hHome() {
           the agent — nothing here started with a click.
         </p>
 
+        <p className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-[11px] leading-relaxed text-amber-200">
+          Undeployed mUSDC uses one shared genesis wallet. Run{" "}
+          <span className="font-semibold text-foreground">one</span> settle / claim / approve /
+          renew at a time — parallel clicks can fail with “Database failed to open.”
+          {railBusy ? " A Midnight write is in progress…" : null}
+        </p>
+
         {chainError && (
           <p className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-[11px] leading-relaxed text-amber-200">
             {chainError} New Undeployed settlements still appear here when they land.
           </p>
         )}
 
-
-
-
-        <SweepTrigger address={address} token={payToken} onSettled={refresh} />
+        <SweepTrigger
+          address={address}
+          token={payToken}
+          onSettled={refresh}
+          railBusy={railBusy}
+          setRailBusy={setRailBusy}
+        />
 
         <div className="space-y-3">
           {feed.map((m) => (
-            <InboxCard key={m.id} msg={m} address={address} onSettled={refresh} rawAll={rawAll} />
+            <InboxCard
+              key={m.id}
+              msg={m}
+              address={address}
+              onSettled={refresh}
+              rawAll={rawAll}
+              railBusy={railBusy}
+              setRailBusy={setRailBusy}
+            />
           ))}
         </div>
       </section>
@@ -246,10 +265,14 @@ function SweepTrigger({
   address,
   token,
   onSettled,
+  railBusy,
+  setRailBusy,
 }: {
   address?: string;
   token: keyof typeof TOKENS;
   onSettled: () => void | Promise<void>;
+  railBusy: boolean;
+  setRailBusy: (v: boolean) => void;
 }) {
   const accrue = useServerFn(accruePayout);
   const settle = useServerFn(settleBatch);
@@ -279,7 +302,8 @@ function SweepTrigger({
   }, [load]);
 
   async function runSweep() {
-    if (!address) return;
+    if (!address || railBusy) return;
+    setRailBusy(true);
     setBusy("accrue");
     setMsg(null);
     setRaw(null);
@@ -297,11 +321,13 @@ function SweepTrigger({
       fail(e, "accrue_failed");
     } finally {
       setBusy(null);
+      setRailBusy(false);
     }
   }
 
   async function runSettle() {
-    if (!address) return;
+    if (!address || railBusy) return;
+    setRailBusy(true);
     setBusy("settle");
     setMsg(null);
     setRaw(null);
@@ -322,6 +348,7 @@ function SweepTrigger({
       fail(e, "settle_failed");
     } finally {
       setBusy(null);
+      setRailBusy(false);
     }
   }
 
@@ -338,7 +365,7 @@ function SweepTrigger({
         </p>
         <button
           onClick={() => void runSweep()}
-          disabled={!address || busy !== null}
+          disabled={!address || busy !== null || railBusy}
           className="inline-flex items-center gap-2 rounded-full border border-glow/40 bg-glow/10 px-4 py-1.5 text-[11px] font-bold text-glow disabled:opacity-50"
         >
           {busy === "accrue" && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
@@ -372,7 +399,7 @@ function SweepTrigger({
             </p>
             <button
               onClick={() => void runSettle()}
-              disabled={busy !== null}
+              disabled={busy !== null || railBusy}
               className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-primary to-glow px-4 py-1.5 text-[11px] font-bold text-primary-foreground disabled:opacity-50"
             >
               {busy === "settle" && <Loader2 className="h-3.5 w-3.5 animate-spin" />}

@@ -75,12 +75,17 @@ export function InboxCard({
   address,
   onSettled,
   rawAll = false,
+  railBusy = false,
+  setRailBusy,
 }: {
   msg: A2hMessage;
   address?: string;
   onSettled?: () => void | Promise<void>;
   /** Master toggle: expand every protocol payload on the page. */
   rawAll?: boolean;
+  /** Shared Undeployed write lock across inbox + sweep actions. */
+  railBusy?: boolean;
+  setRailBusy?: (v: boolean) => void;
 }) {
 
   const [open, setOpen] = useState(false);
@@ -122,10 +127,23 @@ export function InboxCard({
   const [payToken] = usePayToken();
   const k = KIND[msg.kind];
   const Icon = k.icon;
+  const locked = busy || railBusy;
+
+  async function beginRail() {
+    if (railBusy) return false;
+    setBusy(true);
+    setRailBusy?.(true);
+    return true;
+  }
+
+  function endRail() {
+    setBusy(false);
+    setRailBusy?.(false);
+  }
 
   async function runRenew() {
     if (!address) return;
-    setBusy(true);
+    if (!(await beginRail())) return;
     setRenewError(null);
     try {
       const res = await renew({ data: { address, token: payToken, days: 90 } });
@@ -148,14 +166,14 @@ export function InboxCard({
           : "Could not renew the mandate right now — try again.",
       );
     } finally {
-      setBusy(false);
+      endRail();
     }
   }
 
 
   async function runClaim() {
     if (!address || !msg.amount) return;
-    setBusy(true);
+    if (!(await beginRail())) return;
     setClaimError(null);
     try {
       const res = await claim({
@@ -185,13 +203,13 @@ export function InboxCard({
     } catch (e) {
       setClaimError(e instanceof Error ? e.message : "Could not claim the offer — try again.");
     } finally {
-      setBusy(false);
+      endRail();
     }
   }
 
   async function runApproval() {
     if (!msg.approval || !address) return;
-    setBusy(true);
+    if (!(await beginRail())) return;
     setResult(null);
     try {
       const res = await approve({
@@ -219,7 +237,7 @@ export function InboxCard({
     } catch (e) {
       setResult({ ok: false, detail: e instanceof Error ? e.message : "payout_failed" });
     } finally {
-      setBusy(false);
+      endRail();
     }
   }
 
@@ -337,7 +355,7 @@ export function InboxCard({
               <>
                 <button
                   onClick={() => void runApproval()}
-                  disabled={busy || !address}
+                  disabled={locked || !address}
                   className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-primary to-glow px-4 py-1.5 text-[11px] font-bold text-primary-foreground disabled:opacity-50"
                 >
                   {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
@@ -345,7 +363,7 @@ export function InboxCard({
                 </button>
                 <button
                   onClick={() => setActed("declined")}
-                  disabled={busy}
+                  disabled={locked}
                   className="rounded-full border border-border px-4 py-1.5 text-[11px] font-bold text-muted-foreground hover:text-foreground"
                 >
                   Decline
@@ -357,7 +375,7 @@ export function InboxCard({
               <>
                 <button
                   onClick={() => void runClaim()}
-                  disabled={busy || !address}
+                  disabled={locked || !address}
                   className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-primary to-glow px-4 py-1.5 text-[11px] font-bold text-primary-foreground disabled:opacity-50"
                 >
                   {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
@@ -365,7 +383,7 @@ export function InboxCard({
                 </button>
                 <button
                   onClick={() => setActed("dismissed")}
-                  disabled={busy}
+                  disabled={locked}
                   className="rounded-full border border-border px-4 py-1.5 text-[11px] font-bold text-muted-foreground hover:text-foreground"
                 >
                   Dismiss
@@ -377,7 +395,7 @@ export function InboxCard({
               <>
                 <button
                   onClick={() => void runRenew()}
-                  disabled={busy || !address}
+                  disabled={locked || !address}
                   className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-primary to-glow px-4 py-1.5 text-[11px] font-bold text-primary-foreground disabled:opacity-50"
                 >
                   {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
@@ -385,7 +403,7 @@ export function InboxCard({
                 </button>
                 <button
                   onClick={() => setActed("deferred")}
-                  disabled={busy}
+                  disabled={locked}
                   className="rounded-full border border-border px-4 py-1.5 text-[11px] font-bold text-muted-foreground hover:text-foreground"
                 >
                   Not now
