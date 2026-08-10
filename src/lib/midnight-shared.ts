@@ -34,6 +34,12 @@ export const CONTRACTS = {
     witness: "localSecretKey" as const,
     domain: "musdc:signer:v1",
   },
+  moveNft: {
+    name: "move-nft",
+    source: "MoveNft.compact",
+    witness: "localSecretKey" as const,
+    domain: "movenft:minter:v1",
+  },
 } as const;
 
 export type ContractKey = keyof typeof CONTRACTS;

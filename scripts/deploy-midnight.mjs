@@ -107,7 +107,22 @@ upsert("VITE_DEFAULT_CONTRACT", out.address);
 if (deployed.midnightUsdc) upsert("VITE_MUSDC_CONTRACT", deployed.midnightUsdc.address);
 if (deployed.mandateVault) upsert("VITE_MANDATE_CONTRACT", deployed.mandateVault.address);
 if (deployed.orderLedger) upsert("VITE_ORDER_CONTRACT", deployed.orderLedger.address);
+if (deployed.moveNft) upsert("VITE_MOVE_NFT_CONTRACT", deployed.moveNft.address);
 fs.writeFileSync(envPath, envLines.filter((l, idx, arr) => l || idx < arr.length - 1).join("\n") + "\n");
+
+// Fresh MoveNft mirror for the new deploy address
+if (deployed.moveNft) {
+  const nftState = "src/data/move-nft-state.undeployed.json";
+  fs.writeFileSync(
+    nftState,
+    JSON.stringify(
+      { contractAddress: deployed.moveNft.address, tokens: [], activity: [] },
+      null,
+      2,
+    ),
+  );
+  console.log(`  ✓ reset ${nftState}`);
+}
 
 console.log(`\n✓ wrote ${outPath}`);
 console.log(`  primary MoveRegistry: ${out.address}`);
