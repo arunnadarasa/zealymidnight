@@ -22,6 +22,11 @@ import { fetchFxRates } from "@/lib/fx.functions";
 import { LiveTotalCalculator } from "@/components/fx/LiveTotalCalculator";
 import { recordSettlement } from "@/lib/tx-log";
 
+type PayState =
+  | { phase: "idle" }
+  | { phase: "paying" }
+  | { phase: "paid"; url: string; amount: string }
+  | { phase: "error"; message: string };
 
 export function CartDrawer() {
   const [open, setOpen] = useState(false);
@@ -40,23 +45,15 @@ export function CartDrawer() {
     0,
   );
 
-  useEffect(() => {
-    if (open) syncCart();
-  }, [open, syncCart]);
-
   const [payToken] = usePayToken();
   const tokenCfg = TOKENS[payToken];
   const { authenticated, login, wallets, available } = useWallet();
   const [fx, setFx] = useState<FxRates | null>(null);
   const getFx = useServerFn(fetchFxRates);
+  const [payState, setPayState] = useState<PayState>({ phase: "idle" });
 
-  const [arcState, setArcState] = useState<
-    { phase: "idle" } | { phase: "paying" } | { phase: "paid"; url: string; amount: string } | { phase: "error"; message: string }
-  >({ phase: "idle" });
-
-  // Live FX: convert the listed GBP total into mUSDC atomic units.
   const currencyCode = items[0]?.price.currencyCode ?? "GBP";
-  const arcAtomic = toAtomic(
+  const settleAtomic = toAtomic(
     convertFromFiat(totalPrice * DEMO_SCALE, currencyCode, payToken, fx),
     payToken,
   );
@@ -70,10 +67,12 @@ export function CartDrawer() {
     void getFx({ data: undefined }).then((rates) => {
       if (mounted) setFx(rates);
     });
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [getFx]);
 
-  const handleCheckout = () => {
+  const handleShopifyCheckout = () => {
     const url = getCheckoutUrl();
     if (url) {
       window.open(url, "_blank");
@@ -81,19 +80,19 @@ export function CartDrawer() {
     }
   };
 
-  const handlePayOnArc = async () => {
+  const handlePayMusdc = async () => {
     if (!authenticated) {
       await login();
       return;
     }
-    const embedded = wallets[0] ?? { address: "server-append" };
-    setArcState({ phase: "paying" });
+    const session = wallets[0] ?? { address: "mn_addr_undeployed1qqqqserverappend" };
+    setPayState({ phase: "paying" });
     try {
       const res = await settleOnMidnight(
-        embedded,
+        session,
         payToken,
         "streetrail:treasury:v1",
-        arcAtomic,
+        settleAtomic,
         "h2h-cart",
       );
       recordSettlement({
@@ -108,16 +107,15 @@ export function CartDrawer() {
         to: res.to,
         from: res.from,
       });
-      setArcState({
+      setPayState({
         phase: "paid",
         url: res.explorer,
-        amount: formatAmount(arcAtomic, payToken),
+        amount: formatAmount(settleAtomic, payToken),
       });
     } catch (e) {
-      setArcState({ phase: "error", message: e instanceof Error ? e.message : String(e) });
+      setPayState({ phase: "error", message: e instanceof Error ? e.message : String(e) });
     }
   };
-
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -125,94 +123,93 @@ export function CartDrawer() {
         <Button
           variant="outline"
           size="icon"
-          className="relative border-border bg-surface text-foreground hover:bg-secondary"
+          className="relative h-9 w-9 border-border bg-surface text-foreground hover:bg-secondary"
         >
-          <ShoppingCart className="h-5 w-5" />
+          <ShoppingCart className="h-4 w-4" />
           {totalItems > 0 && (
-            <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-primary text-primary-foreground">
+            <Badge className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full p-0 text-[10px] bg-primary text-primary-foreground">
               {totalItems}
             </Badge>
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col h-full bg-surface-2 text-foreground border-border">
-        <SheetHeader className="flex-shrink-0">
-          <SheetTitle className="text-foreground">Your Cart</SheetTitle>
-          <SheetDescription className="text-muted-foreground">
+      <SheetContent className="flex h-full w-full flex-col border-border bg-surface-2 text-foreground sm:max-w-md">
+        <SheetHeader className="flex-shrink-0 space-y-1">
+          <SheetTitle className="text-base font-semibold tracking-tight text-foreground">
+            Your cart
+          </SheetTitle>
+          <SheetDescription className="text-xs text-muted-foreground">
             {totalItems === 0
-              ? "Your cart is empty"
-              : `${totalItems} item${totalItems !== 1 ? "s" : ""} in your cart`}
+              ? "Empty — add something from the shop"
+              : `${totalItems} item${totalItems !== 1 ? "s" : ""} · settle in mUSDC on Midnight Undeployed`}
           </SheetDescription>
         </SheetHeader>
-        <div className="flex flex-col flex-1 pt-6 min-h-0">
+
+        <div className="flex min-h-0 flex-1 flex-col pt-4">
           {items.length === 0 ? (
-            <div className="flex-1 flex items-center justify-center">
+            <div className="flex flex-1 items-center justify-center">
               <div className="text-center">
-                <ShoppingCart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Your cart is empty</p>
+                <ShoppingCart className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">Your cart is empty</p>
               </div>
             </div>
           ) : (
             <>
-              <div className="flex-1 overflow-y-auto pr-2 min-h-0">
-                <div className="space-y-4">
+              <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+                <div className="space-y-3">
                   {items.map((item) => {
                     const img = item.product.node.images?.edges?.[0]?.node;
                     return (
-                      <div key={item.variantId} className="flex gap-4 p-2">
-                        <div className="w-16 h-16 bg-secondary rounded-md overflow-hidden flex-shrink-0">
+                      <div key={item.variantId} className="flex gap-3 rounded-lg p-1.5">
+                        <div className="h-14 w-14 flex-shrink-0 overflow-hidden rounded-md bg-secondary">
                           {img && (
                             <img
                               src={img.url}
                               alt={item.product.node.title}
-                              className="w-full h-full object-cover"
+                              className="h-full w-full object-cover"
                             />
                           )}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium truncate text-foreground">
+                        <div className="min-w-0 flex-1">
+                          <h4 className="truncate text-sm font-medium text-foreground">
                             {item.product.node.title}
                           </h4>
-                          <p className="text-sm text-muted-foreground">
-                            {item.selectedOptions.map((o) => o.value).join(" • ")}
+                          <p className="text-[11px] text-muted-foreground">
+                            {item.selectedOptions.map((o) => o.value).join(" · ")}
                           </p>
-                          <p className="font-semibold text-glow">
+                          <p className="mt-0.5 text-xs font-semibold text-glow">
                             {item.price.currencyCode}{" "}
                             {parseFloat(item.price.amount).toFixed(2)}
                           </p>
                         </div>
-                        <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                        <div className="flex flex-shrink-0 flex-col items-end gap-1.5">
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                            className="h-7 w-7 text-muted-foreground hover:text-foreground"
                             onClick={() => removeItem(item.variantId)}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3.5 w-3.5" />
                           </Button>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-0.5">
                             <Button
                               variant="outline"
                               size="icon"
-                              className="h-8 w-8 border-border bg-surface"
-                              onClick={() =>
-                                updateQuantity(item.variantId, item.quantity - 1)
-                              }
+                              className="h-7 w-7 border-border bg-surface"
+                              onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
                             >
-                              <Minus className="h-3.5 w-3.5" />
+                              <Minus className="h-3 w-3" />
                             </Button>
-                            <span className="w-6 text-center text-sm">
+                            <span className="w-5 text-center text-xs tabular-nums">
                               {item.quantity}
                             </span>
                             <Button
                               variant="outline"
                               size="icon"
-                              className="h-8 w-8 border-border bg-surface"
-                              onClick={() =>
-                                updateQuantity(item.variantId, item.quantity + 1)
-                              }
+                              className="h-7 w-7 border-border bg-surface"
+                              onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
                             >
-                              <Plus className="h-3.5 w-3.5" />
+                              <Plus className="h-3 w-3" />
                             </Button>
                           </div>
                         </div>
@@ -221,10 +218,11 @@ export function CartDrawer() {
                   })}
                 </div>
               </div>
-              <div className="flex-shrink-0 space-y-3 pt-4 border-t border-border">
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold">Total</span>
-                  <span className="text-xl font-black text-glow">
+
+              <div className="flex-shrink-0 space-y-2.5 border-t border-border pt-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-muted-foreground">Total</span>
+                  <span className="text-base font-bold tabular-nums text-glow">
                     {items[0]?.price.currencyCode || "£"} {totalPrice.toFixed(2)}
                   </span>
                 </div>
@@ -238,73 +236,73 @@ export function CartDrawer() {
 
                 {available && (
                   <Button
-                    onClick={handlePayOnArc}
+                    onClick={() => void handlePayMusdc()}
                     variant="outline"
-                    className="w-full border-primary/50 bg-primary/10 font-bold text-foreground hover:bg-primary/20"
-                    size="lg"
-                    disabled={items.length === 0 || arcState.phase === "paying"}
+                    className="h-9 w-full border-primary/50 bg-primary/10 text-xs font-semibold text-foreground hover:bg-primary/20"
+                    disabled={items.length === 0 || payState.phase === "paying"}
                   >
-                    {arcState.phase === "paying" ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                    {payState.phase === "paying" ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
                     ) : (
                       <>
-                        <Zap className="w-4 h-4 mr-2" />
+                        <Zap className="mr-1.5 h-3.5 w-3.5" />
                         {authenticated
-                          ? `Pay ${tokenCfg.symbol} on Arc`
-                          : "Sign in to pay on Arc"}
+                          ? `Pay ${tokenCfg.symbol} on Midnight`
+                          : "Connect Lace to pay"}
                       </>
                     )}
                   </Button>
                 )}
 
-                {arcState.phase === "paid" && (
+                {payState.phase === "paid" && (
                   <a
-                    href={arcState.url}
+                    href={payState.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="block rounded-lg border border-primary/40 bg-primary/10 px-3 py-2 text-xs font-semibold text-foreground underline decoration-glow/60 underline-offset-4"
+                    className="block rounded-md border border-primary/40 bg-primary/10 px-2.5 py-1.5 text-[11px] font-medium text-foreground underline decoration-glow/60 underline-offset-2"
                   >
-                    Settled {arcState.amount} — view receipt on indexer
+                    Settled {payState.amount} — view on indexer
                   </a>
+                )}
+
+                {payState.phase === "error" && (
+                  <p className="rounded-md border border-destructive/40 bg-destructive/10 px-2.5 py-1.5 text-[11px] text-foreground">
+                    {payState.message}
+                  </p>
                 )}
 
                 <Link
                   to="/judge"
                   onClick={() => setOpen(false)}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-glow underline decoration-glow/50 underline-offset-4 transition hover:text-primary"
+                  className="inline-flex items-center gap-1 text-[11px] font-medium text-glow underline decoration-glow/40 underline-offset-2 transition hover:text-primary"
                 >
-                  <History className="h-3.5 w-3.5" />
+                  <History className="h-3 w-3" />
                   Recent settlements
                 </Link>
-                {arcState.phase === "error" && (
-                  <p className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-foreground">
-                    {arcState.message}
-                  </p>
-                )}
-                {arcState.phase === "idle" && (
-                  <p className="text-[11px] leading-snug text-muted-foreground">
-                    {settlementNote(payToken)} Demo scale ×{DEMO_SCALE} so testnet balances go far.
+
+                {payState.phase === "idle" && (
+                  <p className="text-[10px] leading-snug text-muted-foreground">
+                    {settlementNote(payToken)} Demo scale ×{DEMO_SCALE}.
                     {fx?.stale ? " FX fallback active." : fx ? ` FX: ${fx.source}.` : ""}
                   </p>
                 )}
 
                 <Button
-                  onClick={handleCheckout}
-                  className="w-full bg-primary text-primary-foreground hover:bg-primary/85 font-bold"
-                  size="lg"
+                  onClick={handleShopifyCheckout}
+                  variant="secondary"
+                  className="h-8 w-full text-[11px] font-medium text-muted-foreground"
                   disabled={items.length === 0 || isLoading || isSyncing}
                 >
                   {isLoading || isSyncing ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   ) : (
                     <>
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Checkout with Shopify
+                      <ExternalLink className="mr-1.5 h-3 w-3" />
+                      Optional: Shopify checkout
                     </>
                   )}
                 </Button>
               </div>
-
             </>
           )}
         </div>
