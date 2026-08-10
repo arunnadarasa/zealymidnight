@@ -45,6 +45,22 @@ export type TokenKey = keyof typeof TOKENS;
 
 export const TOKEN_KEYS = Object.keys(TOKENS) as TokenKey[];
 
+/**
+ * Distinct settle assets for UI toggles. On Undeployed, USDC/EURC/cirBTC all
+ * settle as experimental mUSDC — so the switcher collapses to one key.
+ */
+export const SETTLE_TOKEN_KEYS: TokenKey[] = (() => {
+  const seen = new Set<string>();
+  const out: TokenKey[] = [];
+  for (const k of TOKEN_KEYS) {
+    const sym = TOKENS[k].symbol;
+    if (seen.has(sym)) continue;
+    seen.add(sym);
+    out.push(k);
+  }
+  return out;
+})();
+
 export function isTokenKey(v: unknown): v is TokenKey {
   return typeof v === "string" && v in TOKENS;
 }

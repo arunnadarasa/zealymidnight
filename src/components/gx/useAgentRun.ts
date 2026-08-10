@@ -95,7 +95,7 @@ export function useAgentRun(policy: SpendPolicy) {
           return;
         }
 
-        // 0 — Marketplace discovery (Circle Agent Marketplace, keyless public API)
+        // 0 — x402 resource discovery (external catalog when available, else local)
         push({ id: "marketplace", title: "Discover x402 resources", status: "running" });
         try {
           const dis = await discover();
@@ -103,8 +103,8 @@ export function useAgentRun(policy: SpendPolicy) {
             status: "ok",
             detail:
               dis.source === "circle"
-                ? `Circle Agent Marketplace returned ${dis.total} x402 resources; StreetRail settles on Midnight Undeployed. Agent selected ${dis.selected} by network + scheme match.`
-                : `Marketplace unreachable (${dis.reason ?? "unknown"}) — falling back to StreetRail's own resource ${dis.selected}.`,
+                ? `x402 catalog returned ${dis.total} resources; StreetRail settles on Midnight Undeployed. Agent selected ${dis.selected} by network + scheme match.`
+                : `Catalog unreachable (${dis.reason ?? "unknown"}) — falling back to StreetRail's own resource ${dis.selected}.`,
             payloadLabel: "discovery · selected resource",
             payload: dis.resources.find((r: { resource: string }) => r.resource === dis.selected) ?? dis.resources[0],
             tone: dis.source === "circle" ? "green" : "amber",

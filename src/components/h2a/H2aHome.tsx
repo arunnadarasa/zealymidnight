@@ -27,7 +27,7 @@ const STEPS = [
   {
     icon: ScrollText,
     title: "3 · Read the receipt",
-    body: "Every discovery, quote, mandate check and USDC settlement on Arc is written to an audit ledger.",
+    body: "Every discovery, quote, mandate check and mUSDC settlement on Midnight Undeployed is written to an audit ledger.",
   },
 ];
 
@@ -78,8 +78,8 @@ export function H2aHome() {
         </h2>
         <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
           H2A keeps the human in the loop but off the checkout page. You delegate a purchase, the
-          agent negotiates and settles it in USDC on Circle&apos;s Arc Testnet, and it interrupts you
-          the moment a spend breaks your policy.
+          agent negotiates and settles it in experimental mUSDC on Midnight Undeployed, and it
+          interrupts you the moment a spend breaks your policy.
         </p>
       </section>
 

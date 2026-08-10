@@ -44,20 +44,17 @@ export async function swapRates(fxUsdRates: { token: string; usd: number }[]): P
 }
 
 /**
- * Gas Station status.
- *
- * Arc's native gas token is already USDC, so Circle Paymaster (which pays gas
- * in USDC on ETH-gas chains) abstracts nothing here. Gas Station is the
- * product that actually sponsors agent gas on Arc Testnet.
+ * Gas / sponsorship status for agent rails.
+ * On Midnight Undeployed, settlement uses genesis server-append + local proofs.
  */
 export function gasStationStatus() {
   const policyId = process.env["CIRCLE_GAS_STATION_POLICY_ID"] ?? null;
   return {
-    product: "Circle Gas Station",
+    product: "Local proof server",
     enabled: Boolean(policyId),
     policyId: policyId ? `${policyId.slice(0, 8)}…` : null,
     note: policyId
-      ? "Agent transactions are gas-sponsored by Circle Gas Station."
-      : "Paymaster is intentionally unused: USDC is already Arc's gas token. Gas Station sponsors agent gas when a policy is attached to the wallet set.",
+      ? "Optional gas policy attached — Undeployed settle still uses mUSDC server-append."
+      : "Undeployed settles with genesis server-append and the local proof server — no EVM gas station.",
   };
 }

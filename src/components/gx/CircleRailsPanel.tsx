@@ -16,8 +16,7 @@ function Row({ label, value, hint }: { label: string; value: string; hint?: stri
 }
 
 /**
- * The Circle product rails powering StreetRail's agent flows:
- * Wallets + Contracts (already shipped), Nanopayments, App Kits and Gas Station.
+ * Undeployed settle-stack status for agent flows (x402 / mUSDC / indexer).
  */
 export function CircleRailsPanel() {
   const fetchRails = useServerFn(getCircleRails);
@@ -28,7 +27,7 @@ export function CircleRailsPanel() {
     staleTime: 5 * 60 * 1000,
   });
   const { data, isLoading } = useQuery({
-    queryKey: ["circle-rails"],
+    queryKey: ["midnight-rails"],
     queryFn: () => fetchRails(),
     staleTime: 5 * 60 * 1000,
   });
@@ -36,14 +35,16 @@ export function CircleRailsPanel() {
   return (
     <section className="rounded-3xl border border-border/70 bg-surface/60 p-5 sm:p-6">
       <header className="flex flex-wrap items-baseline justify-between gap-2">
-        <h3 className="text-sm font-black uppercase tracking-[0.18em] text-foreground">Circle rails</h3>
+        <h3 className="text-sm font-black uppercase tracking-[0.18em] text-foreground">
+          Midnight Undeployed rails
+        </h3>
         <span className="text-[11px] text-muted-foreground">
-          Wallets · Contracts · Nanopayments · App Kits · Gas Station
+          mUSDC · x402 · AP2 · indexer
         </span>
       </header>
 
       {isLoading || !data ? (
-        <p className="mt-4 text-xs text-muted-foreground">Reading Circle rails…</p>
+        <p className="mt-4 text-xs text-muted-foreground">Reading Undeployed rails…</p>
       ) : (
         <ul className="mt-4 grid gap-2 sm:grid-cols-2">
           <Row
@@ -51,7 +52,7 @@ export function CircleRailsPanel() {
             value={auth ? (auth.reachable ? "live" : "off-chain only") : "checking…"}
             hint={
               auth
-                ? `Contract wallet ${auth.authorizer.slice(0, 10)}… authorizes Gateway actions with no EOA delegate — digests are pre-approved by the treasury and verified via isValidSignature.`
+                ? `Contract wallet ${auth.authorizer.slice(0, 10)}… authorizes gateway digests via isValidSignature when configured.`
                 : "Reading the on-chain authorizer…"
             }
           />
@@ -60,42 +61,42 @@ export function CircleRailsPanel() {
             value={data.nanopay.available ? "batched" : "fallback"}
             hint={
               data.nanopay.available
-                ? `Gateway balance ${data.nanopay.gatewayUsdc} USDC · agent ${data.nanopay.agentAddress?.slice(0, 8)}…`
-                : "Gateway batching unfunded — settlement falls back to Midnight mUSDC (x402 facilitator)."
+                ? `Gateway balance ${data.nanopay.gatewayUsdc} · agent ${data.nanopay.agentAddress?.slice(0, 8)}…`
+                : "Gateway batching unfunded — settlement falls back to experimental mUSDC on Midnight Undeployed."
             }
           />
           <Row
-            label="Agent Stack discovery"
+            label="Agent discovery"
             value={`${data.discovery.total} resources`}
             hint={
               data.discovery.source === "circle"
-                ? `Circle Agent Marketplace · ${data.discovery.arcCount} resources (demo settles on Midnight)`
-                : "Marketplace unreachable — using StreetRail's own x402 / Midnight mUSDC resource."
+                ? `External x402 catalog · ${data.discovery.arcCount} resources (demo settles on Midnight Undeployed)`
+                : "External catalog unreachable — using StreetRail's own x402 / mUSDC resource."
             }
           />
           <Row
-            label="App Kit · Unified Balance"
+            label="Unified balance"
             value={data.balance.available ? `${data.balance.totalUsdc} USDC` : "treasury"}
             hint={
               data.balance.address
-                ? `Treasury ${data.balance.address.slice(0, 10)}… — USDC only; EURC and cirBTC settle on the Swap surface.`
-                : "No treasury address configured."
+                ? `Treasury ${data.balance.address.slice(0, 10)}… — FX keys still price EUR/BTC; settle is mUSDC.`
+                : "No treasury address configured for this Undeployed demo."
             }
           />
           <Row
-            label="App Kit · Swap rates"
-            value={data.rates.source === "circle-swap-kit" ? "Circle" : "live FX"}
+            label="FX rates"
+            value="live FX"
             hint={data.rates.rates.map((r) => `${r.token} $${r.usd.toFixed(4)}`).join(" · ")}
           />
           <Row
-            label="Gas Station"
-            value={data.gasStation.enabled ? "sponsoring" : "not attached"}
-            hint={data.gasStation.note}
+            label="Gas / proofs"
+            value={data.gasStation.enabled ? "sponsoring" : "local proofs"}
+            hint="Undeployed settles with genesis server-append + local proof server — no EVM gas station."
           />
           <Row
             label="Paymaster"
-            value="intentionally unused"
-            hint="StreetRail settles experimental mUSDC on Midnight Undeployed — Circle Gas Station / paymaster are not used for that rail."
+            value="not used"
+            hint="StreetRail settles experimental mUSDC on Midnight Undeployed; EVM paymasters are out of path."
           />
         </ul>
       )}

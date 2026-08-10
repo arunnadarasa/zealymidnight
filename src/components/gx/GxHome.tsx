@@ -37,8 +37,8 @@ export function GxHome() {
         <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
           In A2A mode no human touches checkout. A buyer agent discovers this store through its A2A
           0.3 agent card and UCP profile, negotiates against the seller agent, signs an AP2 mandate,
-          gets a 402 payment challenge back, and settles in real USDC on Circle&apos;s Arc Testnet —
-          testnet amounts are scaled to {DEMO_SCALE} × the listed price.
+          gets a 402 payment challenge back, and settles in experimental mUSDC on Midnight
+          Undeployed — testnet amounts are scaled to {DEMO_SCALE} × the listed price.
         </p>
 
         <Link

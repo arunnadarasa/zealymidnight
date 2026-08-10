@@ -7,7 +7,7 @@ import { fetchDiscovery } from "@/lib/discovery.functions";
 const ARC = "eip155:5042002";
 
 const NETWORK_LABELS: Record<string, string> = {
-  "eip155:5042002": "Arc Testnet",
+  "eip155:5042002": "Legacy EVM testnet",
   "eip155:8453": "Base",
   "eip155:137": "Polygon",
   "eip155:1": "Ethereum",
@@ -23,8 +23,8 @@ function netLabel(n?: string) {
 type Filter = "all" | "arc" | "other";
 
 /**
- * The agent's view of Circle's Agent Marketplace: live x402 resources it could
- * pay, discovered rather than hardcoded.
+ * The agent's view of available x402 payment resources — discovered rather
+ * than hardcoded. Falls back to StreetRail's own Undeployed resource.
  */
 export function DiscoveryPanel() {
   const fetchFn = useServerFn(fetchDiscovery);
@@ -58,7 +58,7 @@ export function DiscoveryPanel() {
       <header className="flex flex-wrap items-baseline justify-between gap-2">
         <h3 className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.18em] text-foreground">
           <Radar className="h-4 w-4 text-glow" />
-          Agent marketplace discovery
+          x402 resource discovery
         </h3>
         {data ? (
           <span
@@ -68,15 +68,15 @@ export function DiscoveryPanel() {
                 : "border-amber-500/40 bg-amber-500/10 text-amber-400"
             }`}
           >
-            {data.source === "circle" ? "live · Circle Agent Marketplace" : "local fallback"}
+            {data.source === "circle" ? "live · external catalog" : "local fallback"}
           </span>
         ) : null}
       </header>
 
       <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
-        <code className="text-foreground">GET api.circle.com/v2/x402/discovery/resources</code> — keyless,
-        public. The buyer agent picks a payment rail from this catalog instead of a hardcoded endpoint.
-        {data?.reason ? ` Marketplace unreachable (${data.reason}).` : null}
+        Buyer agents pick a payment rail from a public x402 catalog when available; this demo
+        settles on Midnight Undeployed with experimental mUSDC.
+        {data?.reason ? ` Catalog unreachable (${data.reason}).` : null}
       </p>
 
       {isLoading || !data ? (
@@ -95,7 +95,7 @@ export function DiscoveryPanel() {
                     : "border-border bg-background/40 text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {f === "all" ? `All (${data.resources.length})` : f === "arc" ? `Arc Testnet (${data.arcCount})` : "Other chains"}
+                {f === "all" ? `All (${data.resources.length})` : f === "arc" ? `EVM (${data.arcCount})` : "Other chains"}
               </button>
             ))}
             <input
@@ -108,8 +108,8 @@ export function DiscoveryPanel() {
 
           {rows.length === 0 ? (
             <p className="mt-4 rounded-xl border border-border/70 bg-background/40 px-4 py-6 text-center text-xs text-muted-foreground">
-              No resources match this filter. Circle&apos;s catalog is mostly Base and Polygon today —
-              StreetRail is currently the Arc Testnet entry.
+              No resources match this filter. The public catalog is mostly Base and Polygon today —
+              StreetRail settles on Midnight Undeployed.
             </p>
           ) : (
             <ul className="mt-4 grid max-h-[26rem] gap-2 overflow-y-auto pr-1 lg:grid-cols-2">
