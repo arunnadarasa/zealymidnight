@@ -14,6 +14,8 @@ interface LiveTotalCalculatorProps {
   scale?: number;
   /** Additional context line shown under the total. */
   note?: string;
+  /** Smaller type for drawers / tight panels. */
+  compact?: boolean;
   className?: string;
 }
 
@@ -34,6 +36,7 @@ export function LiveTotalCalculator({
   fiatCurrency,
   scale = 1,
   note,
+  compact = false,
   className = "",
 }: LiveTotalCalculatorProps) {
   const [payToken] = usePayToken();
@@ -78,11 +81,11 @@ export function LiveTotalCalculator({
 
   return (
     <div
-      className={`rounded-2xl border border-border bg-surface/60 p-4 backdrop-blur-sm ${className}`}
+      className={`rounded-xl border border-border bg-surface/60 backdrop-blur-sm ${compact ? "p-2.5" : "rounded-2xl p-4"} ${className}`}
     >
       <div className="flex items-center justify-between gap-3">
-        <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          Live Arc total
+        <span className={`font-semibold uppercase tracking-widest text-muted-foreground ${compact ? "text-[10px]" : "text-xs font-bold"}`}>
+          Live mUSDC total
         </span>
         {loading && !fx ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
@@ -97,11 +100,11 @@ export function LiveTotalCalculator({
         ) : null}
       </div>
 
-      <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="display text-3xl font-black text-foreground sm:text-4xl">
+      <div className={`flex flex-wrap items-baseline gap-x-2 gap-y-1 ${compact ? "mt-1.5" : "mt-3 gap-x-3"}`}>
+        <span className={`font-bold text-foreground ${compact ? "text-lg tabular-nums" : "display text-3xl font-black sm:text-4xl"}`}>
           {tokenAmount.toFixed(tokenPlaces)} {tokenCfg.symbol}
         </span>
-        <span className="text-sm text-muted-foreground">
+        <span className={`text-muted-foreground ${compact ? "text-[11px]" : "text-sm"}`}>
           ≈ {symbol}
           {scaledFiat.toFixed(2)} listed
           {scale !== 1 && (
@@ -110,7 +113,7 @@ export function LiveTotalCalculator({
         </span>
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+      <div className={`flex flex-wrap items-center gap-x-3 gap-y-1 text-muted-foreground ${compact ? "mt-1 text-[10px]" : "mt-2 gap-x-4 text-xs"}`}>
         <span>
           1 USD ≈{" "}
           <span className="font-mono font-semibold text-foreground">
@@ -119,21 +122,21 @@ export function LiveTotalCalculator({
           {tokenCfg.symbol}
         </span>
         <span>
-          Listed USD value:{" "}
+          Listed USD:{" "}
           <span className="font-mono font-semibold text-foreground">
             ${usdEquivalent.toFixed(2)}
           </span>
         </span>
       </div>
 
-      <div className="mt-3 rounded-lg border border-border/60 bg-background/40 px-3 py-2 font-mono text-[11px] text-glow">
+      <div className={`rounded-md border border-border/60 bg-background/40 font-mono text-glow ${compact ? "mt-1.5 px-2 py-1 text-[10px]" : "mt-3 px-3 py-2 text-[11px]"}`}>
         {formatAmount(atomic, payToken)}
       </div>
 
-      {note && <p className="mt-3 text-[11px] leading-snug text-muted-foreground">{note}</p>}
+      {note && <p className={`leading-snug text-muted-foreground ${compact ? "mt-1.5 text-[10px]" : "mt-3 text-[11px]"}`}>{note}</p>}
 
       {fx?.stale && (
-        <p className="mt-2 text-[11px] leading-snug text-amber-400/90">
+        <p className={`leading-snug text-amber-400/90 ${compact ? "mt-1 text-[10px]" : "mt-2 text-[11px]"}`}>
           FX feed is offline; using cached/fallback rates. Totals may differ from market prices.
         </p>
       )}

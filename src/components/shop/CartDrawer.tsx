@@ -232,6 +232,7 @@ export function CartDrawer() {
                   fiatCurrency={items[0]?.price.currencyCode ?? "GBP"}
                   scale={DEMO_SCALE}
                   note={settlementNote(payToken)}
+                  compact
                 />
 
                 {available && (
