@@ -46,6 +46,13 @@ export const CONTRACTS: DeployedContract[] = [
     ["Compact", "appendEntry"],
   ),
   entry(
+    "moveNft",
+    "MoveNft",
+    "Compact Move Rights NFTs — mint / listSale / buy with insert-only maps + mUSDC settle.",
+    deploy.contracts?.moveNft?.address || "",
+    ["Compact", "mint", "listSale", "buy"],
+  ),
+  entry(
     "mandate",
     "MandateVault",
     "AP2 CartMandate anchors with buyer public-key check (ap2:buyer:v1).",
@@ -67,3 +74,16 @@ export const CONTRACTS: DeployedContract[] = [
     ["mUSDC", "x402"],
   ),
 ];
+
+/** Midnight Undeployed network caption (alias kept for Arc-era imports). */
+export const NETWORK_CAPTION =
+  "Midnight Local Undeployed · Compact + indexer GraphQL · Lace optional";
+
+/** @deprecated Use NETWORK_CAPTION */
+export const ARC_CHAIN_CAPTION = NETWORK_CAPTION;
+
+export function shortAddress(address: string) {
+  const a = address.trim();
+  if (a.length <= 12) return a;
+  return `${a.slice(0, 6)}…${a.slice(-4)}`;
+}

@@ -39,6 +39,24 @@ export const WALLET_UNAVAILABLE: WalletApi = {
   dustBalance: null,
 };
 
+/**
+ * SSR / pre-hydrate bootstrap for Midnight Undeployed.
+ * Must keep `available: true` so the Header never flashes Privy "Wallet unavailable"
+ * while ClientOnly waits to mount Lace (`MidnightWalletEntry`).
+ */
+export const UNDEPLOYED_WALLET_BOOTSTRAP: WalletApi = {
+  available: true,
+  ready: true,
+  authenticated: false,
+  user: null,
+  wallets: [],
+  login: noop,
+  logout: noop,
+  network: "undeployed",
+  unshieldedAddress: null,
+  dustBalance: null,
+};
+
 export const WalletContext = createContext<WalletApi>(WALLET_UNAVAILABLE);
 
 export function useWallet(): WalletApi {

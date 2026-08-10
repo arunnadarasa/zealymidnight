@@ -293,7 +293,7 @@ export function InboxCard({
             <div className="mt-3">
               <ReceiptButton
                 href={receipt}
-                label={claimed ? "View claim on Arcscan" : "View receipt on Arcscan"}
+                label={claimed ? "View claim on indexer" : "View receipt on indexer"}
               />
             </div>
           )}

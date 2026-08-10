@@ -47,6 +47,7 @@ export default defineConfig({
     },
     optimizeDeps: {
       noDiscovery: true,
+      include: ["buffer"],
       esbuildOptions: { target: "esnext", supported: { "top-level-await": true } },
       exclude: [
         "@midnight-ntwrk/compact-runtime",

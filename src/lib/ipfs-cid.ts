@@ -1,9 +1,9 @@
 // Dependency-free UnixFS CID computation, browser-safe.
 //
-// Reproduces the CID that Kubo (and pinning services built on it) produce for
-// a file added with default settings: 262144-byte fixed-size chunks, a
-// balanced DAG with at most 174 links per parent, dag-pb + UnixFS framing,
-// sha2-256 multihash, emitted as CIDv1 base32.
+// Reproduces the CID that Kubo / Pinata produce for a file added with default
+// settings: 262144-byte fixed-size chunks, **raw leaves** (codec 0x55), a
+// balanced DAG with at most 174 links per parent, dag-pb + UnixFS framing for
+// internal nodes, sha2-256 multihash, emitted as CIDv1 base32.
 //
 // Everything is streamed with File.slice(), so a 25 MB clip never lands in
 // memory in one piece.
@@ -147,17 +147,15 @@ interface Node {
 }
 
 /**
- * UnixFS Data message for a leaf: Type=File(2), Data=bytes, filesize.
- * An empty file omits the Data field entirely, matching Kubo.
+ * UnixFS Data message for an empty file leaf: Type=File(2), filesize=0.
+ * Empty files are never raw-leaves in Kubo — they stay UnixFS-wrapped.
  */
-function unixfsLeafData(chunk: Uint8Array): Uint8Array {
+function unixfsEmptyLeafData(): Uint8Array {
   const s = new Sink();
   s.varField(1, 2);
-  if (chunk.length > 0) s.lenField(2, chunk);
-  s.varField(3, chunk.length);
+  s.varField(3, 0);
   return s.take();
 }
-
 
 /** UnixFS Data message for an internal node: Type=File(2), filesize, blocksizes[]. */
 function unixfsBranchData(fileSize: number, blockSizes: number[]): Uint8Array {
@@ -183,11 +181,20 @@ function pbNode(links: Node[], data: Uint8Array): Uint8Array {
 }
 
 
-async function makeNode(block: Uint8Array, fileSize: number, childTsize: number): Promise<Node> {
+async function makeDagPbNode(block: Uint8Array, fileSize: number, childTsize: number): Promise<Node> {
   return {
     cid: cidBytes(0x70, await sha256(block)),
     tsize: block.length + childTsize,
     fileSize,
+  };
+}
+
+/** Raw-leaf node: CID is sha2-256 of the bare chunk bytes (codec raw / 0x55). */
+async function makeRawLeaf(chunk: Uint8Array): Promise<Node> {
+  return {
+    cid: cidBytes(0x55, await sha256(chunk)),
+    tsize: chunk.length,
+    fileSize: chunk.length,
   };
 }
 
@@ -216,7 +223,7 @@ export async function computeUnixfsCid(
 
   // Empty file: a single empty UnixFS file node (no Data field).
   if (total === 0) {
-    const block = pbNode([], unixfsLeafData(new Uint8Array(0)));
+    const block = pbNode([], unixfsEmptyLeafData());
     return {
       cid: encodeCidV1(0x70, await sha256(block)),
       chunks: 1,
@@ -226,16 +233,14 @@ export async function computeUnixfsCid(
     };
   }
 
-
   for (let offset = 0; offset < total; offset += CHUNK_BYTES) {
     const slice = file.slice(offset, Math.min(offset + CHUNK_BYTES, total));
     const chunk = new Uint8Array(await slice.arrayBuffer());
-    const block = pbNode([], unixfsLeafData(chunk));
-    leaves.push(await makeNode(block, chunk.length, 0));
+    leaves.push(await makeRawLeaf(chunk));
     onProgress?.(Math.min(1, (offset + chunk.length) / total));
   }
 
-  // Single chunk: the leaf is the root.
+  // Single chunk: the raw leaf is the root (CIDv1 raw → bafkrei…).
   if (leaves.length === 1) {
     const only = leaves[0]!;
     return {
@@ -256,7 +261,7 @@ export async function computeUnixfsCid(
       const fileSize = group.reduce((sum, n) => sum + n.fileSize, 0);
       const childTsize = group.reduce((sum, n) => sum + n.tsize, 0);
       const block = pbNode(group, unixfsBranchData(fileSize, group.map((n) => n.fileSize)));
-      next.push(await makeNode(block, fileSize, childTsize));
+      next.push(await makeDagPbNode(block, fileSize, childTsize));
     }
     level = next;
   }

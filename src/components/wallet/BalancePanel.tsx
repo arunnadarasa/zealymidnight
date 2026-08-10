@@ -8,8 +8,8 @@ import { fetchFxRates } from "@/lib/fx.functions";
 import { TOKENS, TOKEN_KEYS, getTokenUsdRate, type FxRates } from "@/lib/tokens";
 
 /**
- * Wallet balances on Arc Testnet for the three settlement tokens. Doubles as
- * the settlement-currency picker: tapping a row switches the active token.
+ * Connected-wallet panel. On Undeployed this is Lace / server-append identity;
+ * token rows remain for pay-token UX (mUSDC settlement is the live path).
  */
 export function BalancePanel({ onClose }: { onClose?: () => void }) {
   const { user, authenticated, login, logout } = useWallet();
@@ -36,7 +36,8 @@ export function BalancePanel({ onClose }: { onClose?: () => void }) {
           <Wallet className="h-3.5 w-3.5" /> Balances
         </p>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-          Sign in to see your USDC, EURC and cirBTC balances on Arc Testnet.
+          Connect Lace (or the Undeployed session) to continue. Settlement on this build uses
+          experimental mUSDC via Compact contracts.
         </p>
         <button
           onClick={() => void login()}
@@ -52,7 +53,7 @@ export function BalancePanel({ onClose }: { onClose?: () => void }) {
     <div className="w-[min(21rem,calc(100vw-2rem))] rounded-2xl border border-border bg-card p-4 shadow-elevated">
       <div className="flex items-center justify-between gap-2">
         <p className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
-          <Wallet className="h-3.5 w-3.5" /> Arc Testnet balances
+          <Wallet className="h-3.5 w-3.5" /> Midnight session
         </p>
         <button
           onClick={() => void refresh()}
@@ -115,8 +116,8 @@ export function BalancePanel({ onClose }: { onClose?: () => void }) {
       </ul>
 
       <p className="mt-3 text-[10px] leading-relaxed text-muted-foreground">
-        Balances read live off Arc Testnet. A dash means the public RPC is rate-limiting history
-        reads — try refresh in a moment. Zero balances need a top-up from the Arc faucet.
+        Session identity for Undeployed. Prefer `/market` mUSDC for settlement; Arc EVM balances
+        are not the source of truth here.
       </p>
 
       <button

@@ -253,9 +253,9 @@ export function ClipPreview({ media, maxUploadBytes, onPinned, onClear }: Props)
             <>
               <code className="mt-1 block break-all text-[11px] text-glow">{staged.contentHash}</code>
               <p className="mt-1 text-[11px] text-muted-foreground">
-                Built the same way IPFS builds it — {staged.chunks.toLocaleString()}{" "}
-                {staged.chunks === 1 ? "block" : "blocks"} of 256 KiB folded into one root, so the pin should return this
-                exact CID.
+                Built the same way Pinata / Kubo builds it (raw leaves, 256 KiB chunks) —{" "}
+                {staged.chunks.toLocaleString()} {staged.chunks === 1 ? "block" : "blocks"} folded into one root, so the
+                pin should return this exact CID.
               </p>
             </>
           ) : (

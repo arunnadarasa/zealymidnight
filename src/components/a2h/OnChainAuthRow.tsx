@@ -61,7 +61,7 @@ export function OnChainAuthRow({ auth }: { auth: OnChainAuthView }) {
           rel="noopener noreferrer"
           className="mt-1 inline-block font-semibold text-foreground underline underline-offset-2"
         >
-          Approval tx on Arcscan
+          Approval tx on indexer
         </a>
       )}
       {!auth.valid && auth.detail ? (

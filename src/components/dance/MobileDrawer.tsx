@@ -26,7 +26,7 @@ import { useArcBalances, shortBalance } from "@/lib/use-arc-balances";
 import { useCartStore } from "@/stores/cartStore";
 import { fetchFxRates } from "@/lib/fx.functions";
 import { ARC_EXPLORER, TOKENS, TOKEN_KEYS, getTokenUsdRate, type FxRates } from "@/lib/tokens";
-import { ARC_CHAIN_CAPTION, CONTRACTS } from "@/lib/contracts";
+import { NETWORK_CAPTION, CONTRACTS } from "@/lib/contracts";
 
 const REPO_URL = "https://github.com/arunnadarasa/streetdancearc";
 
@@ -271,11 +271,11 @@ export function MobileDrawer({
             rel="noreferrer"
             className="flex items-center gap-2 rounded-xl px-2 py-2 text-[11px] font-semibold text-muted-foreground hover:text-foreground"
           >
-            <FileCode2 className="h-3.5 w-3.5 shrink-0" /> {c.name} on Arcscan
+            <FileCode2 className="h-3.5 w-3.5 shrink-0" /> {c.name} on indexer
             <ExternalLink className="ml-auto h-3 w-3 shrink-0" />
           </a>
         ))}
-        <p className="px-2 pt-1 text-[10px] text-muted-foreground">{ARC_CHAIN_CAPTION}</p>
+        <p className="px-2 pt-1 text-[10px] text-muted-foreground">{NETWORK_CAPTION}</p>
 
       </div>
     </div>

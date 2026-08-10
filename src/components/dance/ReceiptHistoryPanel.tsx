@@ -100,9 +100,9 @@ export function ReceiptHistoryPanel({ className = "" }: { className?: string }) 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs uppercase tracking-widest text-muted-foreground">Receipt history</p>
-          <h3 className="display mt-1 text-lg sm:text-xl">Every log() on Arc</h3>
+          <h3 className="display mt-1 text-lg sm:text-xl">Every append on Midnight</h3>
           <p className="mt-1 text-xs text-muted-foreground">
-            Registry calls across all four modes, newest first, with ArcScan receipts.
+            Registry calls across modes, newest first, with local indexer links.
           </p>
         </div>
         <button
@@ -186,7 +186,7 @@ export function ReceiptHistoryPanel({ className = "" }: { className?: string }) 
           rel="noreferrer"
           className="mt-4 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
         >
-          Registry contract on ArcScan <ExternalLink className="h-3 w-3" />
+          Registry contract on indexer <ExternalLink className="h-3 w-3" />
         </a>
       )}
     </div>

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/moves")({
       {
         name: "description",
         content:
-          "Register, license and settle dance moves as on-chain rights records with IPFS metadata — paid in USDC, EURC or cirBTC on Circle's Arc Testnet.",
+          "Register choreography on Midnight Local Undeployed — Compact MoveRegistry + MoveNft, IPFS metadata, settle listings in experimental mUSDC.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/moves")({
       {
         property: "og:description",
         content:
-          "License choreography as on-chain rights records, settled in stablecoins on Arc.",
+          "License choreography as Compact Move Rights NFTs on Midnight Undeployed.",
       },
     ],
   }),

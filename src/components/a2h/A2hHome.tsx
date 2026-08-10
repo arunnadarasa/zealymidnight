@@ -116,9 +116,9 @@ export function A2hHome() {
           You just get paid.
         </h2>
         <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
-          A2H flips the direction. Nobody opens an app. The Rights Agent watches the rail, sees
-          your move earn, sends the {payToken} from the Circle treasury wallet and drops the Arc
-          receipt in your inbox. When it wants to act outside its mandate, it asks — and waits.
+          A2H flips the direction. Nobody opens an app. On Midnight Undeployed the Rights Agent
+          path is demo-oriented: move earns are recorded with Compact + mUSDC, and payouts that
+          still mention Circle Arc are out of path for this build.
         </p>
       </section>
 
