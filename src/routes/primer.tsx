@@ -31,8 +31,8 @@ export const Route = createFileRoute("/primer")({
 const CARDS = [
   {
     dance: "The Cypher",
-    tech: "Blockchain (Arc)",
-    body: "The cypher is the circle where every move is seen, in order, and can't be erased. Arc is the digital cypher: every payment and rights record is visible to all, locked in order, and permanent.",
+    tech: "Blockchain (Midnight)",
+    body: "The cypher is the circle where every move is seen, in order, and can't be erased. Midnight Undeployed is the local digital cypher: Compact contracts, a proof server, and an indexer that remembers every settle and rights log.",
   },
   {
     dance: "Your Signature Move",
@@ -61,23 +61,23 @@ const CARDS = [
   },
   {
     dance: "Battle Money That Doesn't Bounce",
-    tech: "Stablecoins",
-    body: "USDC, EURC and cirBTC are digital dollars, euros and bitcoin that keep their value. A prize purse in stablecoins doesn't shrink between the battle and the bank.",
+    tech: "mUSDC",
+    body: "mUSDC is StreetRail's experimental Midnight dollar for Undeployed demos — scaled test amounts so the local faucet and proof server can settle shop, negotiate, and payout rails.",
   },
   {
     dance: "The Door Fee",
-    tech: "Gas",
-    body: "On Arc, USDC is the door fee. You don't need a second token to post a move or buy a tee — the same stablecoin you pay with covers the network cost.",
+    tech: "Proofs",
+    body: "On Undeployed, the 'door fee' is a zero-knowledge proof. Compact calls are proven locally (first proof can take a bit), then the indexer shows the receipt — run one write at a time.",
   },
   {
     dance: "The Rights Wall",
     tech: "Move Registry",
-    body: "Dancers log a choreography fingerprint on-chain. Every merch drop tied to that move inherits the credit, so the creators get paid when their style travels.",
+    body: "Dancers log a choreography fingerprint in Compact MoveRegistry. Every merch drop tied to that move inherits the credit, so creators get paid when their style travels.",
   },
   {
     dance: "Your Dance ID",
-    tech: "Wallet",
-    body: "Privy gives you an embedded wallet with Google login. It's your digital dance card: it holds your stablecoins, signs your moves, and proves it's you at the door.",
+    tech: "Wallet (Lace)",
+    body: "Lace is your Midnight dance card. Connect it to show an mn_addr… session, sign when a human path needs you, and receive A2H payouts into that address.",
   },
 ];
 
@@ -154,7 +154,7 @@ function PrimerPage() {
             <h2 className="display mt-3 text-2xl text-foreground sm:text-4xl">Pick a mode and move.</h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
               Start in H2H for the familiar shop feel, then flip the toggle to watch agents negotiate,
-              pay, and log rights on Arc.
+              pay, and log rights on Midnight Undeployed.
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
