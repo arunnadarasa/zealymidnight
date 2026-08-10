@@ -20,6 +20,7 @@ import { accruePayout, listAccruals, listPayouts, settleBatch } from "@/lib/a2h.
 import { useWallet } from "@/lib/wallet-context";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { FxRates } from "@/lib/tokens";
+import { useElapsed } from "@/lib/use-elapsed";
 
 const SWEEP_PLAYS = 1000;
 const SWEEP_MOVE = "krump-2024-w32";
@@ -46,6 +47,7 @@ export function A2hHome() {
   const [chainError, setChainError] = useState<string | null>(null);
   const [rawAll, setRawAll] = useState(false);
   const [railBusy, setRailBusy] = useState(false);
+  const { label: railElapsed } = useElapsed(railBusy);
 
 
   const getFx = useServerFn(fetchFxRates);
@@ -221,8 +223,9 @@ export function A2hHome() {
         <p className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-[11px] leading-relaxed text-amber-200">
           Undeployed mUSDC uses one shared genesis wallet. Run{" "}
           <span className="font-semibold text-foreground">one</span> settle / claim / approve /
-          renew at a time — parallel clicks can fail with “Database failed to open.”
-          {railBusy ? " A Midnight write is in progress…" : null}
+          renew at a time — parallel clicks can fail with “Database failed to open.” First proof can
+          take up to ~4 min cold.
+          {railBusy ? ` A Midnight write is in progress… ${railElapsed}` : null}
         </p>
 
         {chainError && (
@@ -282,6 +285,7 @@ function SweepTrigger({
   const [msg, setMsg] = useState<string | null>(null);
   const [raw, setRaw] = useState<string | null>(null);
   const [showRaw, setShowRaw] = useState(false);
+  const { label: elapsed } = useElapsed(busy !== null);
 
   function fail(e: unknown, fallback: string) {
     const text = e instanceof Error ? e.message : fallback;
@@ -369,7 +373,11 @@ function SweepTrigger({
           className="inline-flex items-center gap-2 rounded-full border border-glow/40 bg-glow/10 px-4 py-1.5 text-[11px] font-bold text-glow disabled:opacity-50"
         >
           {busy === "accrue" && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-          {address ? "Run rights sweep" : "Connect wallet first"}
+          {busy === "accrue"
+            ? `Sweeping… ${elapsed}`
+            : address
+              ? "Run rights sweep"
+              : "Connect wallet first"}
         </button>
       </div>
 
@@ -403,9 +411,14 @@ function SweepTrigger({
               className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-primary to-glow px-4 py-1.5 text-[11px] font-bold text-primary-foreground disabled:opacity-50"
             >
               {busy === "settle" && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-              {busy === "settle" ? "Settling on Midnight…" : "Settle now"}
+              {busy === "settle" ? `Settling on Midnight… ${elapsed}` : "Settle now"}
             </button>
           </div>
+          {busy === "settle" && (
+            <p className="mt-2 text-[10px] text-muted-foreground">
+              Proving mUSDC on Undeployed · first proof can take up to ~4 min · elapsed {elapsed}
+            </p>
+          )}
         </div>
       )}
 

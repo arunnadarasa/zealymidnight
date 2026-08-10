@@ -14,6 +14,7 @@ import { ReceiptButton } from "@/components/gx/ReceiptButton";
 
 import { approvePayout, claimOffer, renewMandate } from "@/lib/a2h.functions";
 import { usePayToken } from "@/lib/pay-token";
+import { useElapsed } from "@/lib/use-elapsed";
 import { setMandateExpiry } from "@/components/a2h/a2h-feed";
 import { OnChainAuthRow, type OnChainAuthView } from "./OnChainAuthRow";
 import type { A2hMessage } from "./a2h-feed";
@@ -128,6 +129,7 @@ export function InboxCard({
   const k = KIND[msg.kind];
   const Icon = k.icon;
   const locked = busy || railBusy;
+  const { label: elapsed } = useElapsed(busy);
 
   async function beginRail() {
     if (railBusy) return false;
@@ -359,7 +361,11 @@ export function InboxCard({
                   className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-primary to-glow px-4 py-1.5 text-[11px] font-bold text-primary-foreground disabled:opacity-50"
                 >
                   {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                  {busy ? "Settling on Midnight…" : address ? "Approve payout" : "Connect wallet first"}
+                  {busy
+                    ? `Settling on Midnight… ${elapsed}`
+                    : address
+                      ? "Approve payout"
+                      : "Connect wallet first"}
                 </button>
                 <button
                   onClick={() => setActed("declined")}
@@ -379,7 +385,11 @@ export function InboxCard({
                   className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-primary to-glow px-4 py-1.5 text-[11px] font-bold text-primary-foreground disabled:opacity-50"
                 >
                   {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                  {busy ? "Claiming on Midnight…" : address ? "Claim offer" : "Connect wallet first"}
+                  {busy
+                    ? `Claiming on Midnight… ${elapsed}`
+                    : address
+                      ? "Claim offer"
+                      : "Connect wallet first"}
                 </button>
                 <button
                   onClick={() => setActed("dismissed")}
@@ -399,7 +409,11 @@ export function InboxCard({
                   className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-primary to-glow px-4 py-1.5 text-[11px] font-bold text-primary-foreground disabled:opacity-50"
                 >
                   {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                  {busy ? "Signing mandate…" : address ? "Renew mandate" : "Connect wallet first"}
+                  {busy
+                    ? `Signing mandate… ${elapsed}`
+                    : address
+                      ? "Renew mandate"
+                      : "Connect wallet first"}
                 </button>
                 <button
                   onClick={() => setActed("deferred")}
@@ -412,6 +426,12 @@ export function InboxCard({
             )}
 
 
+
+            {busy && (
+              <p className="basis-full text-[10px] text-muted-foreground">
+                Proving mUSDC on Undeployed · first proof can take up to ~4 min · elapsed {elapsed}
+              </p>
+            )}
 
             {acted && (
               <span className="rounded-full border border-border bg-background/60 px-3 py-1.5 text-[11px] font-bold text-muted-foreground">
