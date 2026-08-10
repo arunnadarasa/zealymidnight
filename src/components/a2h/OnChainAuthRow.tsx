@@ -55,7 +55,7 @@ export function OnChainAuthRow({ auth }: { auth: OnChainAuthView }) {
           View approval on indexer
         </a>
       )}
-      {!auth.valid && auth.detail ? (
+      {!auth.valid && auth.detail && !/missing_secret|CIRCLE_API_KEY|Arc Testnet|Arcscan/i.test(auth.detail) ? (
         <p className="mt-1 leading-relaxed text-muted-foreground">{auth.detail}</p>
       ) : null}
     </div>

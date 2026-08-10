@@ -4,16 +4,14 @@ import { AlertTriangle, Check, Copy, ExternalLink, Loader2, RefreshCw, Landmark 
 import { getPublicConfig } from "@/lib/config.functions";
 import { fetchFxRates } from "@/lib/fx.functions";
 import { useArcBalances, shortBalance } from "@/lib/use-arc-balances";
-import { ARC_EXPLORER, TOKENS, TOKEN_KEYS, getTokenUsdRate, type FxRates } from "@/lib/tokens";
+import { MIDNIGHT_EXPLORER, TOKENS, TOKEN_KEYS, getTokenUsdRate, type FxRates } from "@/lib/tokens";
 
-/** Below this much USDC the treasury cannot reliably pay Arc gas. */
+/** Below this much mUSDC the demo treasury warning fires (legacy balance read). */
 export const GAS_FLOOR_USDC = 0.5;
 
-const FAUCET = "https://faucet.circle.com/";
-
 /**
- * The Circle treasury wallet that funds A2H payouts: address, live Arc
- * balances and a low-gas warning so a user can top up before a payout fails.
+ * Settlement treasury panel for A2H: address + balances. On Undeployed, payouts
+ * settle as experimental mUSDC — no Circle Arc faucet / Arcscan chrome.
  */
 export function TreasuryPanel({ onLowGas }: { onLowGas?: (low: boolean) => void }) {
   const [address, setAddress] = useState<string | null>(null);
@@ -72,8 +70,8 @@ export function TreasuryPanel({ onLowGas }: { onLowGas?: (low: boolean) => void 
     return (
       <section className="rounded-2xl border border-border bg-card/70 p-5">
         <p className="text-[11px] leading-relaxed text-muted-foreground">
-          No Circle treasury wallet is configured for this build, so agent payouts run in
-          demo mode only.
+          No separate treasury wallet is configured — agent payouts settle as experimental mUSDC
+          on Midnight Undeployed.
         </p>
       </section>
     );
@@ -86,7 +84,7 @@ export function TreasuryPanel({ onLowGas }: { onLowGas?: (low: boolean) => void 
           <Landmark className="mt-0.5 h-5 w-5 shrink-0 text-glow" />
           <div className="min-w-0">
             <p className="text-[10px] font-black uppercase tracking-[0.18em] text-glow">
-              Circle treasury · Arc Testnet
+              Settlement treasury · Midnight Undeployed
             </p>
             <h3 className="mt-1 text-lg font-black text-foreground">Who actually pays you</h3>
             <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -105,12 +103,12 @@ export function TreasuryPanel({ onLowGas }: { onLowGas?: (low: boolean) => void 
                 )}
               </button>
               <a
-                href={`${ARC_EXPLORER}/address/${address}`}
+                href={MIDNIGHT_EXPLORER}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-[11px] font-bold text-muted-foreground hover:text-foreground"
               >
-                Arcscan <ExternalLink className="h-3 w-3" />
+                Indexer <ExternalLink className="h-3 w-3" />
               </a>
             </div>
           </div>
@@ -140,7 +138,7 @@ export function TreasuryPanel({ onLowGas }: { onLowGas?: (low: boolean) => void 
             >
               <p className="text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground">
                 {cfg.symbol}
-                {k === "USDC" ? " · gas" : ""}
+                {k === "USDC" ? " · settle" : ""}
               </p>
               <p className="mt-0.5 text-base font-black tabular-nums text-foreground">
                 {shortBalance(bal)}
@@ -157,11 +155,8 @@ export function TreasuryPanel({ onLowGas }: { onLowGas?: (low: boolean) => void 
         <p className="mt-3 flex items-start gap-2 rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2.5 text-[11px] leading-relaxed text-amber-200">
           <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           <span>
-            Treasury is low on USDC gas — payouts will fail. Top up at{" "}
-            <a href={FAUCET} target="_blank" rel="noreferrer" className="underline">
-              faucet.circle.com
-            </a>{" "}
-            (pick Arc Testnet) and retry.
+            Demo treasury balance is low — Undeployed payouts still settle as experimental mUSDC
+            via Compact when the local node, indexer, and proof server are up.
           </span>
         </p>
       )}

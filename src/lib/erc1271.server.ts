@@ -1,14 +1,13 @@
 // Server-only ERC-1271 authorization for the StreetRail treasury / rights agent.
 //
-// Off-chain Ed25519 mandates prove StreetRail issued an authorization. ERC-1271
-// makes that authorization verifiable ON Arc by any counterparty (Circle Gateway
-// included) without an EOA delegate holding a key: the treasury pre-approves the
-// payload digest with a transaction, and `isValidSignature(digest, "")` then
-// returns the magic value 0x1626ba7e.
+// Off-chain Ed25519 mandates prove StreetRail issued an authorization. On Midnight
+// Undeployed the Circle ERC-1271 write is skipped (Ed25519 + optional Compact
+// MandateVault). Legacy path: treasury pre-approves the digest on EVM so
+// `isValidSignature(digest, "")` returns the magic value 0x1626ba7e.
 
 import { createPublicClient, http, keccak256, toHex, type Address } from "viem";
 import { arcTestnet } from "@/lib/arc-chain";
-import { ARC_EXPLORER } from "@/lib/tokens";
+import { ARC_EXPLORER, MIDNIGHT_EXPLORER, NETWORK_ID } from "@/lib/tokens";
 import { canonical } from "@/lib/mandate-sign.server";
 import { treasuryContractCall, TREASURY_ADDRESS } from "@/lib/circle.server";
 import authorizer from "@/data/street-rail-authorizer.json";
@@ -16,6 +15,10 @@ import authorizer from "@/data/street-rail-authorizer.json";
 export const AUTHORIZER = authorizer.address as Address;
 export const ERC1271_MAGIC = "0x1626ba7e";
 export const ARC_CAIP2 = "eip155:5042002";
+export const MIDNIGHT_CAIP2 = `midnight:${NETWORK_ID}`;
+
+const isUndeployed = () =>
+  (process.env.VITE_NETWORK_ID ?? NETWORK_ID ?? "undeployed") === "undeployed";
 
 /** Default validity for an on-chain approved digest. */
 export const AUTH_TTL_SECONDS = 90 * 86_400;
@@ -112,8 +115,9 @@ export async function verify1271(
 }
 
 /**
- * Approve a payload digest on-chain from the Circle treasury wallet.
- * No EOA delegate, no user signature — the contract wallet IS the authorization.
+ * Approve a payload digest. On Undeployed (or without Circle), return an
+ * Ed25519-only stub so the UI never surfaces CIRCLE_API_KEY / Arc chrome.
+ * Legacy: Circle treasury contract wallet IS the authorization.
  */
 export async function approveAuthOnChain(
   payload: unknown,
@@ -121,6 +125,24 @@ export async function approveAuthOnChain(
 ): Promise<OnChainAuth> {
   const hash = computeAuthHash(payload);
   const expirySeconds = Math.floor(Date.now() / 1000) + ttlSeconds;
+  const undeployed = isUndeployed() || !process.env["CIRCLE_API_KEY"];
+
+  if (undeployed) {
+    return {
+      scheme: "erc-1271",
+      authorizer: AUTHORIZER,
+      authorizerUrl: MIDNIGHT_EXPLORER,
+      network: MIDNIGHT_CAIP2,
+      hash,
+      magicValue: ERC1271_MAGIC,
+      expiresAt: new Date(expirySeconds * 1000).toISOString(),
+      txHash: null,
+      receiptUrl: null,
+      valid: false,
+      // No detail — OnChainAuthRow already says Ed25519 / Compact — Midnight Undeployed.
+    };
+  }
+
   const base: OnChainAuth = {
     scheme: "erc-1271",
     authorizer: AUTHORIZER,
@@ -164,14 +186,17 @@ export async function approveAuthOnChain(
 }
 
 function humanizeAuthError(message: string): string {
+  if (message.includes("missing_secret") || message.includes("CIRCLE_API_KEY")) {
+    return "Off-chain Ed25519 mandate applies — Compact ERC-1271 anchor skipped on this build.";
+  }
   if (message.includes("circle_tx_timeout")) {
-    return "The on-chain authorization is still pending at Circle — the off-chain mandate is already valid.";
+    return "Legacy EVM authorization is still pending — the off-chain Ed25519 mandate is already valid.";
   }
   if (message.includes("insufficient")) {
-    return "The treasury wallet is out of USDC gas, so the digest was not anchored on Arc.";
+    return "The legacy treasury wallet is out of gas, so the digest was not anchored on-chain.";
   }
   if (message.startsWith("circle_")) {
-    return "Circle rejected the authorization write — the off-chain mandate still applies.";
+    return "Legacy treasury rejected the authorization write — the off-chain mandate still applies.";
   }
   return message.split(":").slice(0, 2).join(": ").slice(0, 160);
 }
