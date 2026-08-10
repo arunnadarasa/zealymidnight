@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import { ARC_EXPLORER, type TokenKey } from "@/lib/tokens";
+import { INDEXER_URL, type TokenKey } from "@/lib/tokens";
 
 /**
  * Browser-side settlement ledger.
  *
- * Every real Arc transfer the app makes (H2H cart checkout, H2A agent run,
- * A2A negotiation, A2H payout) is appended here so a judge can see the whole
- * demo's on-chain footprint in one list, with links back to Arcscan.
+ * Every real Midnight Undeployed transfer the app makes (H2H cart checkout,
+ * H2A agent run, A2A negotiation, A2H payout) is appended here so a judge can
+ * see the demo's ledger footprint in one list, with links to the local indexer.
  */
 
 export type TxMode = "H2H" | "H2A" | "A2A" | "A2H";
@@ -54,7 +54,7 @@ function write(entries: TxEntry[]) {
 }
 
 export function txExplorerUrl(hash: string): string {
-  return `${ARC_EXPLORER}/tx/${hash}`;
+  return `${INDEXER_URL}#tx=${encodeURIComponent(hash)}`;
 }
 
 /** Append a settlement. Re-recording the same hash updates the existing row. */
