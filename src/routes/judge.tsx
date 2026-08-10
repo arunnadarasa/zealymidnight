@@ -23,11 +23,11 @@ import { usePayToken } from "@/lib/pay-token";
 import { getPublicConfig } from "@/lib/config.functions";
 import { fetchX402Challenge } from "@/lib/judge.functions";
 import { pushPayout } from "@/lib/a2h.functions";
-import { ARC_EXPLORER } from "@/lib/tokens";
+import { txExplorerUrl } from "@/lib/tokens";
 
-const TITLE = "Judge run · StreetRail — all four modes on Arc";
+const TITLE = "Judge run · StreetRail — all four modes on Midnight";
 const DESCRIPTION =
-  "A guided four-step run through StreetRail's H2H, H2A, A2A and A2H modes on Circle's Arc Testnet, with live x402 challenges and on-chain Arcscan receipts.";
+  "A guided four-step run through StreetRail's H2H, H2A, A2A and A2H modes on Midnight Local Undeployed, with live x402 challenges and indexer receipts.";
 
 export const Route = createFileRoute("/judge")({
   head: () => ({
@@ -179,7 +179,7 @@ function JudgePage() {
           <SectionHead
             eyebrow="For judges"
             title="Four modes, one run"
-            blurb="Merch commerce first, agent rails underneath. Steps 1 and 2 are signed by your own wallet. Steps 3 and 4 run agent-side against Arc Testnet right here — no wallet needed."
+            blurb="Merch commerce first, agent rails underneath. Steps 1 and 2 use your Lace session when a human path needs it. Steps 3 and 4 run agent-side against Midnight Undeployed right here — Compact proofs + local indexer."
           />
 
           <div className="mt-8 space-y-4">
@@ -187,8 +187,8 @@ function JudgePage() {
               index={1}
               mode="H2H"
               icon={<ShoppingBag className="h-5 w-5" />}
-              title="Buy streetwear with stablecoins"
-              blurb="The human path: browse the drop, pick USDC, EURC or cirBTC, and pay from your wallet. USDC is the gas token, so there is no second asset to hold."
+              title="Buy streetwear with mUSDC"
+              blurb="The human path: browse the drop and settle in experimental mUSDC on Midnight Undeployed. Demo amounts are scaled for the local faucet and proof server."
             >
               <Link
                 to="/shop"
@@ -197,7 +197,7 @@ function JudgePage() {
                 Open the shop <ArrowRight className="h-4 w-4" />
               </Link>
               <p className="text-xs text-muted-foreground">
-                Requires a funded Arc Testnet wallet. Top up at faucet.circle.com.
+                Connect Lace for an mn_addr… session. Keep the local node, indexer, and proof server running.
               </p>
             </StepShell>
 
@@ -224,7 +224,7 @@ function JudgePage() {
               mode="A2A"
               icon={<Handshake className="h-5 w-5" />}
               title="Live x402 payment challenge"
-              blurb="A buyer agent posts an order to StreetRail's merchant endpoint and gets back a machine-readable 402 challenge: exact amount, CAIP-19 asset, and where to pay on Arc."
+              blurb="A buyer agent posts an order to StreetRail's merchant endpoint and gets back a machine-readable 402 challenge: exact amount, asset, and the Midnight Undeployed settle path."
             >
               <div className="flex flex-wrap gap-2">
                 <button
@@ -261,8 +261,8 @@ function JudgePage() {
               index={4}
               mode="A2H"
               icon={<Inbox className="h-5 w-5" />}
-              title="Agent pays a choreographer on Arc"
-              blurb={`A rights agent accrues ${JUDGE_PLAYS} plays at $0.001 each off-chain, crosses the $0.50 batch threshold, then settles once on Arc from the Circle treasury and logs it to the rights registry.`}
+              title="Agent pays a choreographer on Midnight"
+              blurb={`A rights agent accrues ${JUDGE_PLAYS} plays at $0.001 each off-chain, crosses the $0.50 batch threshold, then settles once in mUSDC on Midnight Undeployed and logs it to MoveRegistry.`}
             >
               <div className="flex flex-wrap gap-2">
                 <button
@@ -277,7 +277,7 @@ function JudgePage() {
                     <CheckCircle2 className="h-4 w-4" />
                   ) : null}
                   {a2hState === "running"
-                    ? "Settling on Arc…"
+                    ? "Settling on Midnight…"
                     : a2hState === "done"
                       ? "Payout settled"
                       : "Settle a real payout"}
@@ -291,17 +291,17 @@ function JudgePage() {
               </div>
               <p className="break-all text-xs text-muted-foreground">
                 Paying to {payee ? `${payee.slice(0, 10)}…${payee.slice(-6)}` : "…"}{" "}
-                {wallet.wallets[0]?.address ? "(your wallet)" : "(treasury, connect a wallet to redirect)"}
+                {wallet.wallets[0]?.address ? "(your Lace session)" : "(treasury, connect Lace to redirect)"}
               </p>
               {a2hError ? <p className="text-xs text-red-300">{a2hError}</p> : null}
               {a2hTx ? (
                 <a
-                  href={`${ARC_EXPLORER}/tx/${a2hTx}`}
+                  href={txExplorerUrl(a2hTx)}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 text-sm font-semibold text-primary underline underline-offset-4"
                 >
-                  View the receipt on Arcscan <ExternalLink className="h-4 w-4" />
+                  View the receipt on the indexer <ExternalLink className="h-4 w-4" />
                 </a>
               ) : null}
               {a2hResult ? <JsonBlock label="Settlement" value={a2hResult} tone={a2hState === "done" ? "green" : "amber"} /> : null}
@@ -313,7 +313,7 @@ function JudgePage() {
           <SectionHead
             eyebrow="Receipts"
             title="Everything that settled"
-            blurb="Live ledger of this session's Arc Testnet transfers across all four modes, with Arcscan receipts."
+            blurb="Live ledger of this session's Midnight Undeployed transfers across all four modes, with local indexer receipts."
           />
           <div className="mt-6">
             <TxHistoryPanel title="Settlement history" />
@@ -325,7 +325,7 @@ function JudgePage() {
           <SectionHead
             eyebrow="Verify"
             title="The four deployed contracts"
-            blurb="Every address below is live on Arc Testnet and verified on Arcscan."
+            blurb="Every address below is deployed on Midnight Local Undeployed and linked from the local indexer."
           />
           <ContractsPanel className="mt-6 md:grid md:grid-cols-2 md:gap-3 md:space-y-0" />
         </Section>
