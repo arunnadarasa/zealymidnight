@@ -118,8 +118,8 @@ function ShopPage() {
             <Section tone="base">
               <SectionHead
                 eyebrow="Receipts"
-                title="Your Arc settlements"
-                blurb="Every shop checkout paid on Arc Testnet, with a link to the Arcscan receipt."
+                title="Your Midnight settlements"
+                blurb="Every shop checkout settled in experimental mUSDC on Midnight Undeployed, with a link to the local indexer receipt."
               />
               <div className="mt-8">
                 <TxHistoryPanel mode="H2H" title="Shop settlements" />

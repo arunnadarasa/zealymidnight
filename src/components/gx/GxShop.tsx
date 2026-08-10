@@ -60,8 +60,8 @@ export function GxShop() {
         </h2>
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-muted-foreground">
           Same Shopify inventory as H2H mode — no product photography, no hero copy. Each SKU is a
-          typed offer carrying availability, listed price, and the exact USDC amount and Arc address
-          that settles it.
+          typed offer carrying availability, listed price, and the exact mUSDC amount on Midnight
+          Undeployed that settles it.
         </p>
       </section>
 

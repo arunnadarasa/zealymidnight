@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { JsonBlock } from "./JsonBlock";
 import { AgentRunPanel } from "./AgentRunPanel";
 import { DEMO_SCALE, RIGHTS_REGISTRY } from "@/lib/agent-card";
+import { INDEXER_URL } from "@/lib/tokens";
 
 const ENDPOINTS = [
   { method: "GET", path: "/api/public/agent-card", note: "A2A 0.3 agent card with skills + extensions" },
@@ -86,10 +87,22 @@ export function GxHome() {
         </div>
         <ol className="space-y-2">
           {[
-            { k: "1", t: "POST /api/public/purchase", d: "Seller answers 402 with a payment challenge: amount, token, Arc address." },
+            {
+              k: "1",
+              t: "POST /api/public/purchase",
+              d: "Seller answers 402 with a payment challenge: amount, token, Midnight settle path.",
+            },
             { k: "2", t: "AP2 mandate", d: "Buyer agent checks the challenge against its signed spend mandate." },
-            { k: "3", t: "Settle on Arc", d: "USDC transfer on Arc Testnet (chain 5042002) — USDC is also the gas token." },
-            { k: "4", t: "Receipt", d: "Retry with the payment proof; seller verifies on-chain and returns the order + tx hash." },
+            {
+              k: "3",
+              t: "Settle on Midnight",
+              d: "mUSDC transfer on Midnight Undeployed via the proof server — demo amounts are scaled for the local faucet.",
+            },
+            {
+              k: "4",
+              t: "Receipt",
+              d: "Retry with the payment proof; seller verifies against the indexer and returns the order + tx hash.",
+            },
           ].map((s) => (
             <li key={s.k} className="flex min-w-0 gap-3 rounded-xl border border-border bg-background/50 p-3">
               <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-glow text-[11px] font-black text-glow-foreground">
@@ -131,12 +144,12 @@ export function GxHome() {
           </div>
 
           <a
-            href={`https://testnet.arcscan.app/address/${RIGHTS_REGISTRY}`}
+            href={`${INDEXER_URL}#contract=${encodeURIComponent(RIGHTS_REGISTRY)}`}
             target="_blank"
             rel="noreferrer"
             className="inline-block break-all text-xs font-bold text-glow hover:underline"
           >
-            Rights registry {RIGHTS_REGISTRY} on Arcscan →
+            Rights registry {RIGHTS_REGISTRY} on the indexer →
           </a>
         </section>
       )}
