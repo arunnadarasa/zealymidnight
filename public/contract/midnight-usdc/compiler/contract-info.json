@@ -64,7 +64,7 @@
   ],
   "ledger": [
     {
-      "name": "balances",
+      "name": "credits",
       "index": 0,
       "exported": true,
       "storage": "Map",
@@ -78,8 +78,32 @@
       }
     },
     {
-      "name": "spent_nonces",
+      "name": "credit_to",
       "index": 1,
+      "exported": true,
+      "storage": "Map",
+      "key": {
+        "type-name": "Bytes",
+        "length": 32
+      },
+      "value": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "faucet_claimed",
+      "index": 2,
+      "exported": true,
+      "storage": "Set",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "spent_nonces",
+      "index": 3,
       "exported": true,
       "storage": "Set",
       "type": {

@@ -307,6 +307,8 @@ async function sendPayoutMidnight(params: {
     });
   } catch (e1) {
     const msg1 = e1 instanceof Error ? e1.message : String(e1);
+    // Insert-only mUSDC no longer needs a faucet for balance overwrites; keep a
+    // soft retry for cold wallet / first-submit flakes only.
     if (/no balance|insufficient|SubmissionError|FiberFailure/i.test(msg1)) {
       await musdcFaucet().catch(() => {});
       transfer = await musdcTransfer({

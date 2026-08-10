@@ -22,8 +22,8 @@
     },
     "midnightUsdc": {
       "name": "midnight-usdc",
-      "address": "1229993de3305d0758e7f43c20d5ebdee0fc05f36121a6b1a7b8531e368e0445",
-      "deployTx": "c862bb43f4da65e9a366ecfd3b3a8088dad4dfda8893e3791b0750a9986f38e6",
+      "address": "c21eb7b9c471f28c0a1e202d4f719bf8a6ef755f1fe0077ab9a1dede1301c138",
+      "deployTx": "e0bf6106a0bc6ddb8d603357b22564cf0478bb88f7b87d266a5f15a6067589f7",
       "privateStateId": "streetrail-midnight-state-midnight-usdc"
     },
     "moveNft": {
@@ -33,5 +33,5 @@
       "privateStateId": "streetrail-midnight-state-move-nft"
     }
   },
-  "deployedAt": "2026-08-10T18:22:14.653Z"
+  "deployedAt": "2026-08-10T19:34:26.435Z"
 }

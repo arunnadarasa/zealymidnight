@@ -32,12 +32,25 @@ export type Circuits<PS> = {
 }
 
 export type Ledger = {
-  balances: {
+  credits: {
     isEmpty(): boolean;
     size(): bigint;
     member(key_0: Uint8Array): boolean;
     lookup(key_0: Uint8Array): bigint;
     [Symbol.iterator](): Iterator<[Uint8Array, bigint]>
+  };
+  credit_to: {
+    isEmpty(): boolean;
+    size(): bigint;
+    member(key_0: Uint8Array): boolean;
+    lookup(key_0: Uint8Array): Uint8Array;
+    [Symbol.iterator](): Iterator<[Uint8Array, Uint8Array]>
+  };
+  faucet_claimed: {
+    isEmpty(): boolean;
+    size(): bigint;
+    member(elem_0: Uint8Array): boolean;
+    [Symbol.iterator](): Iterator<Uint8Array>
   };
   spent_nonces: {
     isEmpty(): boolean;
