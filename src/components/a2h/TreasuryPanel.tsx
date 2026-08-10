@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { AlertTriangle, Check, Copy, Loader2, RefreshCw, Landmark } from "lucide-react";
+import { AlertTriangle, Check, Copy, ExternalLink, Loader2, RefreshCw, Landmark } from "lucide-react";
 import { getPublicConfig } from "@/lib/config.functions";
 import { fetchFxRates } from "@/lib/fx.functions";
 import { useArcBalances, shortBalance } from "@/lib/use-arc-balances";
-import { TOKENS, TOKEN_KEYS, getTokenUsdRate, type FxRates } from "@/lib/tokens";
+import { ARC_EXPLORER, TOKENS, TOKEN_KEYS, getTokenUsdRate, type FxRates } from "@/lib/tokens";
 
-/** Below this much USDC the treasury cannot reliably pay Arc gas (gated off on Undeployed). */
+/** Below this much USDC the treasury cannot reliably pay Arc gas. */
 export const GAS_FLOOR_USDC = 0.5;
 
+const FAUCET = "https://faucet.circle.com/";
+
 /**
- * Settlement identity panel for A2H. On Midnight Undeployed, Circle Arc treasury
- * payouts are gated; Compact MoveNft + mUSDC is the live rail.
+ * The Circle treasury wallet that funds A2H payouts: address, live Arc
+ * balances and a low-gas warning so a user can top up before a payout fails.
  */
 export function TreasuryPanel({ onLowGas }: { onLowGas?: (low: boolean) => void }) {
   const [address, setAddress] = useState<string | null>(null);
@@ -70,8 +72,8 @@ export function TreasuryPanel({ onLowGas }: { onLowGas?: (low: boolean) => void 
     return (
       <section className="rounded-2xl border border-border bg-card/70 p-5">
         <p className="text-[11px] leading-relaxed text-muted-foreground">
-          No Circle Arc treasury is wired for Midnight Undeployed — agent payouts stay demo-only.
-          Use `/moves` + `/market` with Compact MoveNft and mUSDC.
+          No Circle treasury wallet is configured for this build, so agent payouts run in
+          demo mode only.
         </p>
       </section>
     );
@@ -84,9 +86,9 @@ export function TreasuryPanel({ onLowGas }: { onLowGas?: (low: boolean) => void 
           <Landmark className="mt-0.5 h-5 w-5 shrink-0 text-glow" />
           <div className="min-w-0">
             <p className="text-[10px] font-black uppercase tracking-[0.18em] text-glow">
-              Undeployed · server-append
+              Circle treasury · Arc Testnet
             </p>
-            <h3 className="mt-1 text-lg font-black text-foreground">Who settles on this build</h3>
+            <h3 className="mt-1 text-lg font-black text-foreground">Who actually pays you</h3>
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <button
                 type="button"
@@ -102,9 +104,14 @@ export function TreasuryPanel({ onLowGas }: { onLowGas?: (low: boolean) => void 
                   <Copy className="h-3 w-3 shrink-0" />
                 )}
               </button>
-              <span className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-[11px] font-bold text-muted-foreground">
-                Circle Arc payouts gated off
-              </span>
+              <a
+                href={`${ARC_EXPLORER}/address/${address}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-[11px] font-bold text-muted-foreground hover:text-foreground"
+              >
+                Arcscan <ExternalLink className="h-3 w-3" />
+              </a>
             </div>
           </div>
         </div>
@@ -150,8 +157,11 @@ export function TreasuryPanel({ onLowGas }: { onLowGas?: (low: boolean) => void 
         <p className="mt-3 flex items-start gap-2 rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2.5 text-[11px] leading-relaxed text-amber-200">
           <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           <span>
-            Treasury gas is an Arc-path concern. On Undeployed, settle with experimental mUSDC
-            via the MoveNft market instead.
+            Treasury is low on USDC gas — payouts will fail. Top up at{" "}
+            <a href={FAUCET} target="_blank" rel="noreferrer" className="underline">
+              faucet.circle.com
+            </a>{" "}
+            (pick Arc Testnet) and retry.
           </span>
         </p>
       )}
