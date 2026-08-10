@@ -16,6 +16,7 @@ function midnightSsrStub(): Plugin {
     [path.resolve("src/lib/anchor-mandate.server.ts"), path.resolve("src/lib/anchor-mandate.ssr-stub.ts")],
     [path.resolve("src/lib/musdc.server.ts"), path.resolve("src/lib/musdc.ssr-stub.ts")],
     [path.resolve("src/lib/record-order.server.ts"), path.resolve("src/lib/record-order.ssr-stub.ts")],
+    [path.resolve("src/lib/move-nft.server.ts"), path.resolve("src/lib/move-nft.ssr-stub.ts")],
     [path.resolve("src/lib/midnight-providers.server.ts"), wasmStub],
   ];
   return {
