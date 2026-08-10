@@ -1,37 +1,37 @@
 {
   "network": "undeployed",
-  "deployedAt": "2026-08-10T19:34:26.435Z",
-  "address": "ec3bf223f95a6ee2bc9b8b519bbe60f37511bd65ff52993572acfd431c92179e",
+  "deployedAt": "2026-08-10T20:10:56.474Z",
+  "address": "ce44b613e3f9866c60b446b99bb3b2c11f393bc6dc41ac6261d2f842a4dae9c7",
   "privateStateId": "streetrail-midnight-state-move-registry",
   "contracts": {
     "moveRegistry": {
       "name": "move-registry",
-      "address": "ec3bf223f95a6ee2bc9b8b519bbe60f37511bd65ff52993572acfd431c92179e",
-      "deployTx": "512f5865c350f7debfabc10848226c8e705ffa53f992b8c16b2efdc5347f6569",
+      "address": "ce44b613e3f9866c60b446b99bb3b2c11f393bc6dc41ac6261d2f842a4dae9c7",
+      "deployTx": "10a35945b3aafbcc495ed14325fd506be6d424d3474d972ab5c8cab7c117e546",
       "privateStateId": "streetrail-midnight-state-move-registry"
     },
     "mandateVault": {
       "name": "mandate-vault",
-      "address": "f413bbe2779e1ea28459821864ec6bc1ff67477d8ff3feaa3904f39f8dabea33",
-      "deployTx": "7298ca4970f1686742df7fa0034e89880f74c78a47c94ac98a47bb907033435d",
+      "address": "8ae827658ce347020bccfe1d225f44273e70bdb7f321e7f7aab73591c94e7622",
+      "deployTx": "9def41f9c3e0ec39df876477cfbbc07a842fbfa6f53cec7a3cbdb7bc08826b81",
       "privateStateId": "streetrail-midnight-state-mandate-vault"
     },
     "orderLedger": {
       "name": "order-ledger",
-      "address": "c59cdac8a87b239983993076d46b2610a7af582a140047ca137ec8cad9e2bd1b",
-      "deployTx": "3c8e9e68e89df4b782ae960016b33f3dac54a98ca08760ba5d6ebcbf82e8abb7",
+      "address": "31877201f229e1bb9bf1ecd37ddcee8255b016f2490a8e3fd8665584ac931104",
+      "deployTx": "5e89c90b599f1632a0ad5715cf8be9be4c7dede43b054184d6f5cf4f4247e2cb",
       "privateStateId": "streetrail-midnight-state-order-ledger"
     },
     "midnightUsdc": {
       "name": "midnight-usdc",
-      "address": "c21eb7b9c471f28c0a1e202d4f719bf8a6ef755f1fe0077ab9a1dede1301c138",
-      "deployTx": "e0bf6106a0bc6ddb8d603357b22564cf0478bb88f7b87d266a5f15a6067589f7",
+      "address": "dffd38a6254f386019e87391ecb32cdc68aa821171acb70bd84f1be34d111708",
+      "deployTx": "d0ff1c64c27c9e50c482cf31c02093602b9ed3d47168b8ced95937c05176d4db",
       "privateStateId": "streetrail-midnight-state-midnight-usdc"
     },
     "moveNft": {
       "name": "move-nft",
-      "address": "32aedaedbe3e0cf9f0176f54aa8bc604a6eaec896c6f75866cde45a59c9d0a05",
-      "deployTx": "3f8d7046257f36b5f40d910301b119823b73701513fac1dfbc56b5040a89c557",
+      "address": "d530c85d408a5e2179ed09c914eb80a04ffcf7ac2b5db7527b5d09e23a901f7a",
+      "deployTx": "678348dac461affd009045a1baac6151058f177f14fd5b7c604fdbf98874ba6c",
       "privateStateId": "streetrail-midnight-state-move-nft"
     }
   }

@@ -201,6 +201,12 @@ function humanizePayoutError(message: string): string {
   if (/Indexer history is empty|Midnight MoveRegistry|missing_secret/i.test(message)) {
     return "Midnight Undeployed settle failed — check the local node, indexer, proof server, and mandate signing.";
   }
+  if (/Custom error:\s*117|Invalid Transaction: Custom error: 117/i.test(message)) {
+    return "Undeployed wallet state is stale (RpcError 117). Wipe midnight-level-db, redeploy contracts, restart Vite, then retry one action.";
+  }
+  if (/SubmissionError|FiberFailure/i.test(message)) {
+    return "Midnight submission failed — run one write at a time; if it persists, wipe LevelDB and redeploy.";
+  }
   if (message.includes("circle_tx_timeout")) {
     return "The payout transaction is still pending — check the indexer in a moment.";
   }
@@ -345,13 +351,17 @@ export async function runClaimOffer(data: {
         };
         const registryAddr = j.contracts?.moveRegistry?.address || j.address;
         if (registryAddr) {
-          const anchored = await appendEntry({
-            contractAddress: registryAddr,
-            appTag: "streetrail_a2h_claim",
-            message: `srclaim:${data.offerId}:${data.address.toLowerCase()}`,
-            payload: { claimCode, settleTx: txHash, value: scaled },
-          });
-          txHash = anchored.txId || txHash;
+          try {
+            const anchored = await appendEntry({
+              contractAddress: registryAddr,
+              appTag: "streetrail_a2h_claim",
+              message: `srclaim:${data.offerId}:${data.address.toLowerCase()}`,
+              payload: { claimCode, settleTx: txHash, value: scaled },
+            });
+            txHash = anchored.txId || txHash;
+          } catch {
+            /* transfer still counts as the claim receipt */
+          }
         }
       }
     } else {
