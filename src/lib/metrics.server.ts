@@ -88,7 +88,7 @@ function fmt(n: number | null): string | null {
   return n === null ? null : n.toLocaleString("en-US");
 }
 
-/** Aggregate live activity from the four contracts. Never throws. */
+/** Aggregate live activity from the five Compact contracts. Never throws. */
 export async function readOnChainMetrics(): Promise<OnChainMetrics> {
   if (cache && Date.now() - cache.at < CACHE_TTL_MS) return cache.value;
 

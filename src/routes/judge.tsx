@@ -324,7 +324,7 @@ function JudgePage() {
         <Section tone="raised">
           <SectionHead
             eyebrow="Verify"
-            title="The four deployed contracts"
+            title="The five deployed contracts"
             blurb="Every address below is deployed on Midnight Local Undeployed and linked from the local indexer."
           />
           <ContractsPanel className="mt-6 md:grid md:grid-cols-2 md:gap-3 md:space-y-0" />
