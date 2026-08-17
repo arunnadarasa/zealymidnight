@@ -75,7 +75,7 @@ const isRateLimited = (e: unknown) =>
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 function humanReason(e: unknown): string {
-  if (isRateLimited(e)) return "The public Arc RPC is rate-limiting history reads right now.";
+  if (isRateLimited(e)) return "The public RPC is rate-limiting history reads right now.";
   if (isRange(e)) return "The RPC provider limits how far back log queries can reach.";
   return "Registry history could not be read from the RPC provider.";
 }

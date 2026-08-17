@@ -1,7 +1,7 @@
 {
   "protocolVersion": "0.3.0",
   "name": "streetkode-storefront",
-  "description": "Street dance streetwear storefront. Speaks A2A 0.3 JSON-RPC, exposes the live catalog as typed offers, and settles orders in USDC on Circle's Arc Testnet over an a2a-x402 payment challenge. Also publishes a UCP discovery profile and AP2 cart/payment mandates.",
+  "description": "Street dance streetwear storefront. Speaks A2A 0.3 JSON-RPC, exposes the live catalog as typed offers, and settles orders in experimental mUSDC on Midnight Local Undeployed over an a2a-x402 payment challenge. Also publishes a UCP discovery profile and AP2 cart/payment mandates.",
   "canonicalUrl": "/api/public/agent-card",
   "version": "1.1.0",
   "capabilities": {
@@ -29,7 +29,7 @@
     {
       "id": "ucp_discovery",
       "name": "UCP discovery",
-      "description": "Universal Commerce Protocol discovery profile for the Arc Testnet USDC payment handler.",
+      "description": "Universal Commerce Protocol discovery profile for the mUSDC payment handler.",
       "tags": ["ucp", "discovery", "commerce"],
       "endpoint": { "method": "GET", "path": "/api/public/ucp/discovery" }
     },
@@ -43,7 +43,7 @@
     {
       "id": "purchase",
       "name": "Purchase",
-      "description": "Re-send the order with an X-PAYMENT header carrying the Arc transaction hash. The server verifies the transfer on-chain before releasing the fulfilment object.",
+      "description": "Re-send the order with an X-PAYMENT header carrying the Midnight transaction hash. The server verifies the transfer on-chain before releasing the fulfilment object.",
       "tags": ["commerce", "x402", "settlement", "usdc"],
       "endpoint": { "method": "POST", "path": "/api/public/purchase" }
     }
@@ -62,7 +62,7 @@
     "rights": {
       "registry": "0x4d13b45f823f8944522890c20d8695b6005465f0",
       "chain": "eip155:5042002",
-      "explorer": "https://testnet.arcscan.app/address/0x4d13b45f823f8944522890c20d8695b6005465f0",
+      "explorer": "http://localhost:8088/api/v4/graphql",
       "description": "DanceMoveTokens — the move-rights registry. An offer's provenance pointer resolves to a log() event naming the choreographer and the IPFS rights CID."
     }
   }

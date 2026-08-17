@@ -15,7 +15,7 @@ export function mapChainError(e: unknown, context?: { tokenId?: string }): Frien
   }
   if (hay.includes("insufficient funds") || hay.includes("insufficient balance") || hay.includes("gas required exceeds")) {
     return {
-      message: "Not enough USDC for gas on Arc. Top up at faucet.circle.com and try again.",
+      message: "Not enough USDC for gas. Top up and try again.",
       detail: msg,
     };
   }
@@ -45,10 +45,10 @@ export function mapChainError(e: unknown, context?: { tokenId?: string }): Frien
   }
   if (hay.includes("chain mismatch") || hay.includes("does not match the target chain")) {
 
-    return { message: "Your wallet is on the wrong network. Switch to Arc Testnet and retry.", detail: msg };
+    return { message: "Your wallet is on the wrong network. Switch to Midnight Undeployed and retry.", detail: msg };
   }
   if (hay.includes("failed to fetch") || hay.includes("network request failed") || hay.includes("timeout")) {
-    return { message: "Arc did not respond in time. Check the receipt on Arcscan before retrying.", detail: msg };
+    return { message: "The network did not respond in time. Check the receipt on the indexer before retrying.", detail: msg };
   }
   return { message: msg.split("\n")[0]!.slice(0, 160), detail: msg };
 }

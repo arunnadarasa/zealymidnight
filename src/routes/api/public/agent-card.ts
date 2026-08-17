@@ -42,7 +42,7 @@ export const Route = createFileRoute("/api/public/agent-card")({
               {
                 id: "ucp_discovery",
                 name: "UCP discovery",
-                description: "Universal Commerce Protocol discovery profile for the Arc Testnet USDC payment handler.",
+                description: "Universal Commerce Protocol discovery profile for the mUSDC payment handler.",
                 tags: ["ucp", "discovery", "commerce"],
                 endpoint: { method: "GET", path: "/api/public/ucp/discovery" },
               },
@@ -56,8 +56,8 @@ export const Route = createFileRoute("/api/public/agent-card")({
               {
                 id: "x402_resources",
                 name: "x402 resource discovery",
-                description: "StreetRail published in the Circle Agent Marketplace discovery shape — resource, accepts[] for USDC/EURC/cirBTC on Arc Testnet, and provider metadata.",
-                tags: ["x402", "discovery", "marketplace", "arc"],
+                description: "StreetRail published in the Circle Agent Marketplace discovery shape — resource, accepts[] for mUSDC on Midnight Undeployed, and provider metadata.",
+                tags: ["x402", "discovery", "marketplace", "midnight"],
                 endpoint: { method: "GET", path: "/api/public/x402/resources" },
               },
             ],

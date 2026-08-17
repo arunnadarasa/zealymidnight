@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Copy, ExternalLink } from "lucide-react";
 
-/** Pull a 64-char hex hash from an indexer URL, Arcscan URL, or raw hash. */
+/** Pull a 64-char hex hash from an indexer URL, explorer URL, or raw hash. */
 function hashFromUrl(url?: string): string | undefined {
   if (!url) return undefined;
   const evm = url.match(/0x([0-9a-fA-F]{64})/i);

@@ -1,6 +1,6 @@
 // Server-only nanopayment accrual ledger.
 //
-// Per-play royalties are far too small to settle one-by-one on Arc: each
+// Per-play royalties are far too small to settle one-by-one on-chain: each
 // on-chain payout costs USDC gas and the testnet faucet only gives 20 USDC a
 // day. So the Rights Agent accrues micro-USD amounts here and settles a whole
 // batch in a single transfer + registry log.

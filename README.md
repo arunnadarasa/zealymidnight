@@ -9,7 +9,7 @@ This project is built on the Midnight Network.
 
 This README is aimed at the **Midnight technical community**: Compact authors, indexer users, Lace/wallet integrators, and hackathon judges who need to reproduce the stack, understand the privacy model, and avoid Undeployed dust-wallet footguns.
 
-> **Not** a public EVM / Arc Testnet rail. Legacy Arc/Circle code may remain feature-gated in the tree; the Undeployed path is Compact + genesis **server-append** + local indexer GraphQL.
+> Midnight **Local Undeployed** only: Compact + genesis **server-append** + local indexer GraphQL. Not a public EVM testnet rail.
 
 Companion ops brief for AI agents (Lovable / Cursor): [`Cursor Input.md`](./Cursor%20Input.md).
 
@@ -388,7 +388,7 @@ Full narrative: [`Cursor Input.md`](./Cursor%20Input.md).
 ## Notes
 
 - **mUSDC is experimental** — no peg, never Mainnet.
-- Arc ERC-721 market code may remain but is **out of the Undeployed path**.
+- Legacy EVM ERC-721 market code may remain but is **out of the Undeployed path**.
 - Git: do not rewrite published Lovable history (see `AGENTS.md`).
 
 ## License

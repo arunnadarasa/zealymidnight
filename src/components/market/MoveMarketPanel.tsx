@@ -15,7 +15,7 @@ import { arcTestnet } from "@/lib/arc-chain";
 import { mapChainError } from "@/lib/chain-errors";
 
 import { useWallet } from "@/lib/wallet-context";
-import { TOKENS, type TokenKey } from "@/lib/tokens";
+import { TOKENS, MIDNIGHT_EXPLORER, type TokenKey } from "@/lib/tokens";
 import { TokenSwitcher } from "@/components/dance/TokenSwitcher";
 import { getMarketConfig, listMarketListings } from "@/lib/market.functions";
 import { listMoveNfts } from "@/lib/nft.functions";
@@ -372,7 +372,7 @@ export function MoveMarketPanel() {
         await pub.waitForTransactionReceipt({ hash: h });
       }
 
-      setStatus("Publishing the listing on Arc…");
+      setStatus("Publishing the listing…");
       const hash = await wallet.sendTransaction({
         to: cfg.market as Address,
         data: encodeFunctionData({
@@ -411,7 +411,7 @@ export function MoveMarketPanel() {
       });
       await pub.waitForTransactionReceipt({ hash: approveHash });
 
-      setStatus("Settling on Arc…");
+      setStatus("Settling…");
       const hash = await wallet.sendTransaction({
         to: cfg.market as Address,
         data: encodeFunctionData({ abi: cfg.abi, functionName: "buy", args: [BigInt(item.tokenId)] }),
@@ -450,7 +450,7 @@ export function MoveMarketPanel() {
     }
   }
 
-  /** Reads ownership + approval state on Arc before anything is signed. */
+  /** Reads ownership + approval state before anything is signed. */
   async function onCheckTransfer() {
     begin("transfer-check");
     setPreflight(null);
@@ -458,10 +458,10 @@ export function MoveMarketPanel() {
       if (!cfg?.configured) throw new Error("Marketplace contract is not deployed.");
       if (!transferToken) throw new Error("Pick one of your move NFTs first.");
       const to = transferTo.trim();
-      if (!/^0x[0-9a-fA-F]{40}$/.test(to)) throw new Error("Enter a valid Arc address (0x followed by 40 hex characters).");
+      if (!/^0x[0-9a-fA-F]{40}$/.test(to)) throw new Error("Enter a valid EVM address (0x followed by 40 hex characters).");
 
       const { from, pub } = await clients();
-      setStatus("Checking ownership and approvals on Arc…");
+      setStatus("Checking ownership and approvals…");
 
       const tokenId = BigInt(transferToken);
       const nft = cfg.nft as Address;
@@ -535,7 +535,7 @@ export function MoveMarketPanel() {
   }
 
 
-  const explorer = cfg?.explorer ?? "https://testnet.arcscan.app";
+  const explorer = cfg?.explorer ?? MIDNIGHT_EXPLORER;
 
   return (
     <div className="space-y-6">
@@ -641,7 +641,7 @@ export function MoveMarketPanel() {
                       </button>
                     )}
                     <a href={item.explorerUrl} target="_blank" rel="noreferrer" className="inline-flex h-10 items-center text-xs text-glow hover:underline">
-                      Arcscan →
+                      Indexer →
                     </a>
                   </div>
                 </li>
@@ -718,7 +718,7 @@ export function MoveMarketPanel() {
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
             Prove &amp; append on <a href="/moves" className="text-glow hover:underline">/moves</a>{" "}
-            anchors a Compact MoveRegistry receipt (mUSDC / indexer). It does not mint an Arc ERC-721,
+            anchors a Compact MoveRegistry receipt (mUSDC / indexer). It does not mint an EVM ERC-721,
             so there is nothing for this marketplace dropdown to sell. Use Receipt history and My
             anchored moves for your appends; shop / A2A / A2H still settle in mUSDC.
           </p>
@@ -926,7 +926,7 @@ export function MoveMarketPanel() {
           )}
           {txHash && (
             <a href={`${explorer}/tx/${txHash}`} target="_blank" rel="noreferrer" className="mt-1 block break-all text-xs text-glow hover:underline">
-              View receipt on Arcscan →
+              View receipt on the indexer →
             </a>
           )}
         </div>

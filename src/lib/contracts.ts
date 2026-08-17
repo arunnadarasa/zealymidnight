@@ -75,7 +75,7 @@ export const CONTRACTS: DeployedContract[] = [
   ),
 ];
 
-/** Midnight Undeployed network caption (alias kept for Arc-era imports). */
+/** Midnight Undeployed network caption (alias kept for older imports). */
 export const NETWORK_CAPTION =
   "Midnight Local Undeployed · Compact + indexer GraphQL · Lace optional";
 

@@ -1,11 +1,11 @@
-// Server-only reader for Move Rights marketplace activity on Arc Testnet.
+// Server-only reader for Move Rights marketplace activity (legacy EVM path).
 //
 // Four things can happen to a move: it gets listed, the listing gets
 // cancelled, someone buys it, or the owner hands it to another wallet.
 // Three of those are MoveMarket events; the fourth is a plain ERC-721
 // Transfer.
 //
-// Primary source is Arcscan (Blockscout), which indexes the full history —
+// Primary source is the Blockscout explorer, which indexes the full history —
 // the raw RPC caps log queries at a few tens of thousands of blocks, far
 // short of the collection's first mint. If the explorer is unreachable we
 // fall back to a chunked RPC sweep over the recent window.
@@ -185,7 +185,7 @@ const isRateLimited = (e: unknown) =>
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 function humanReason(e: unknown): string {
-  if (isRateLimited(e)) return "The Arc RPC is rate-limiting history reads right now.";
+  if (isRateLimited(e)) return "The RPC is rate-limiting history reads right now.";
   if (isRange(e)) return "The RPC provider limits how far back log queries can reach.";
   return "Marketplace history could not be read right now.";
 }
@@ -240,7 +240,7 @@ function paramOf(log: ExplorerLog, name: string): string | null {
   return hit ? String(hit.value ?? "") : null;
 }
 
-/** Read the whole indexed history from Arcscan. Returns null if unavailable. */
+/** Read the whole indexed history from the explorer. Returns null if unavailable. */
 async function readViaExplorer(): Promise<MarketActivityEvent[] | null> {
   const [marketLogs, transfers, nftLogs] = await Promise.all([
     getJson<{ items?: ExplorerLog[] }>(`${EXPLORER}/api/v2/addresses/${MARKET_ADDRESS}/logs`),

@@ -73,7 +73,7 @@ function buildCard(origin: string, payTo: string): AgentCard {
     protocolVersion: A2A_PROTOCOL_VERSION,
     name: "streetrail-storefront",
     description:
-      "Street dance streetwear storefront. Speaks A2A 0.3 JSON-RPC, exposes the live catalog as typed offers, and settles orders in USDC on Circle's Arc Testnet via an a2a-x402 payment challenge.",
+      "Street dance streetwear storefront. Speaks A2A 0.3 JSON-RPC, exposes the live catalog as typed offers, and settles orders in experimental mUSDC on Midnight Local Undeployed via an a2a-x402 payment challenge.",
     url: `${origin}/api/public/a2a/message`,
     provider: { organization: "StreetKode Fam", url: origin },
     version: "1.1.0",
@@ -89,7 +89,7 @@ function buildCard(origin: string, payTo: string): AgentCard {
         id: "purchase-streetwear",
         name: "Purchase streetwear",
         description:
-          "Negotiate access to a physical streetwear SKU. Returns an AP2 CartMandate + a2a-x402 payment-required; settle on Arc Testnet (chainId 5042002) to receive an order receipt.",
+          "Negotiate access to a physical streetwear SKU. Returns an AP2 CartMandate + a2a-x402 payment-required; settle in mUSDC on Midnight Undeployed to receive an order receipt.",
         tags: ["commerce", "streetwear", "ap2", "x402", "a2a"],
         endpoint: { method: "POST", path: "/api/public/a2a/message" },
       },
@@ -107,7 +107,7 @@ function buildCard(origin: string, payTo: string): AgentCard {
       rights: {
         registry: "0x4d13b45f823f8944522890c20d8695b6005465f0",
         chain: ARC_CAIP2,
-        explorer: "https://testnet.arcscan.app/address/0x4d13b45f823f8944522890c20d8695b6005465f0",
+        explorer: process.env["VITE_INDEXER_URL"] || "http://localhost:8088/api/v4/graphql",
         description:
           "DanceMoveTokens — the move-rights registry. An offer's provenance pointer resolves to a log() event naming the choreographer and the IPFS rights CID.",
       },
@@ -248,7 +248,7 @@ export const Route = createFileRoute("/api/public/a2a/message")({
               role: "agent",
               kind: "message",
               parts: [
-                { kind: "text", text: `I can offer ${item.title} for ${total} USDC on Arc Testnet.` },
+                { kind: "text", text: `I can offer ${item.title} for ${total} mUSDC on Midnight Undeployed.` },
                 { kind: "data", mimeType: MIME.AP2_CART, data: cart },
                 { kind: "data", mimeType: MIME.X402_REQUIRED, data: requirement },
               ],

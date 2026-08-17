@@ -118,7 +118,7 @@ Before claiming a fresh clone works:
 
 ## UX copy
 
-User-facing strings = Midnight / Lace / mUSDC / local indexer. Not Arcscan, Arc Testnet, Circle faucet, Privy, or raw `CIRCLE_API_KEY`. mUSDC is experimental — no peg, never Mainnet.
+User-facing strings = Midnight / Lace / mUSDC / local indexer. Do not mention EVM explorers, Circle faucet, Privy, or raw `CIRCLE_API_KEY`. mUSDC is experimental — no peg, never Mainnet.
 
 ## Additional resources
 

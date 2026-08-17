@@ -7,7 +7,7 @@
 // Circle's batching SDK currently pulls Solana Anchor into the Worker bundle,
 // which crashes SSR during module initialization. Until the SDK publishes a
 // Worker-safe entry, every path returns the existing structured fallback and
-// the caller continues through direct Arc settlement.
+// the caller continues through direct Midnight settlement.
 
 import { privateKeyToAccount } from "viem/accounts";
 

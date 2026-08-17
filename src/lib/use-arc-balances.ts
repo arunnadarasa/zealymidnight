@@ -24,10 +24,10 @@ async function rpc(method: string, params: unknown[]): Promise<string | null> {
   }
 }
 
-/** One balance read off Arc; never throws — returns null when the RPC is unhappy. */
+/** One balance read; never throws — returns null when the RPC is unhappy. */
 export async function readBalance(token: TokenKey, address: string): Promise<string | null> {
   const cfg = TOKENS[token];
-  // Arc's native gas token is USDC, but some RPCs return eth_getBalance in
+  // Native gas token is USDC, but some RPCs return eth_getBalance in
   // 18-decimal atomic units. Read every token through ERC-20 balanceOf so the
   // decimals line up with the token config.
   const hex = await rpc("eth_call", [
@@ -60,7 +60,7 @@ export function shortBalance(v: string | null | undefined): string {
 }
 
 /**
- * All three Arc balances for one address, read through the same-origin RPC
+ * All three token balances for one address, read through the same-origin RPC
  * proxy and shared between the header pill and the balances panel via a short
  * module-level cache so they never double-poll.
  */

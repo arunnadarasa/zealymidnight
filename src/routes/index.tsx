@@ -15,7 +15,7 @@ import { H2aHome } from "@/components/h2a/H2aHome";
 import { A2hHome } from "@/components/a2h/A2hHome";
 import { getPublicConfig } from "@/lib/config.functions";
 import { LiveMetrics } from "@/components/home/LiveMetrics";
-import { WhyArc } from "@/components/home/WhyArc";
+import { WhyMidnight } from "@/components/home/WhyArc";
 
 
 export const Route = createFileRoute("/")({
@@ -100,9 +100,9 @@ function Index() {
                     </Reveal>
                     <Reveal delay={180}>
                       <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-muted-foreground sm:mt-7 sm:text-lg">
-                        Street dance streetwear built for cyphers and battles — checkout in USDC,
-                        EURC or cirBTC on Circle&apos;s Arc. Every drop is backed by a marketplace
-                        for the moves behind it.
+                        Street dance streetwear built for cyphers and battles — checkout in
+                        experimental mUSDC on Midnight Local Undeployed. Every drop is backed by a
+                        marketplace for the moves behind it.
                       </p>
                     </Reveal>
                     <Reveal delay={260}>
@@ -178,10 +178,10 @@ function Index() {
               </div>
             </Section>
 
-            {/* WHY ARC */}
+            {/* WHY MIDNIGHT */}
             <Section tone="deep" lines>
               <Reveal>
-                <WhyArc />
+                <WhyMidnight />
               </Reveal>
             </Section>
 

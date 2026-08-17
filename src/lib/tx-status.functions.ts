@@ -3,7 +3,7 @@ import { INDEXER_URL } from "@/lib/tokens";
 
 /**
  * Confirmation state for settlement hashes, read from the local Midnight
- * indexer GraphQL API (not Arcscan). Undeployed mUSDC / MoveNft hashes are
+ * indexer GraphQL API. Undeployed mUSDC / MoveNft hashes are
  * HexEncoded ledger ids — 32-byte `hash` or 33-byte `identifier` (00-prefixed).
  */
 

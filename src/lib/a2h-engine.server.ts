@@ -237,7 +237,7 @@ export function runAccruePayout(data: {
   return { ok: true as const, batch: batchView(batch) };
 }
 
-/** Settle one open batch in a single Arc transfer + registry log. */
+/** Settle one open batch in a single mUSDC transfer + registry log. */
 export async function runSettleBatch(data: {
   address: string;
   token: TokenKey;

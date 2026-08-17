@@ -1,7 +1,7 @@
 // Server-only ERC-721 "Move Rights" helpers.
 //
-// The contract is Circle's pre-audited SCP ERC-721 template deployed to Arc
-// Testnet from the dev-controlled treasury wallet. The treasury holds
+// The contract is Circle's pre-audited SCP ERC-721 template deployed to an
+// EVM testnet from the dev-controlled treasury wallet. The treasury holds
 // MINTER_ROLE, so moves are minted agent-side: the dancer pays no gas and
 // sees no extra wallet prompt.
 
@@ -61,7 +61,7 @@ export interface MintResult {
 }
 
 const MIDNIGHT_NFT =
-  "Legacy Arc Move NFT minting is off — use Compact MoveNft via /api/public/move-nft-mint (Prove & mint on /moves).";
+  "Legacy EVM Move NFT minting is off — use Compact MoveNft via /api/public/move-nft-mint (Prove & mint on /moves).";
 
 /** Mint one move NFT to the dancer, with an ipfs:// token URI. */
 export async function mintMove(params: { to: string; cid: string }): Promise<MintResult> {
@@ -142,7 +142,7 @@ export async function listOwnedMoves(owner: string, max = 12): Promise<{
       args: [owner as Address],
     })) as bigint;
   } catch {
-    return { ...base, items: [], detail: "Arc RPC could not read your move NFTs right now." };
+    return { ...base, items: [], detail: "Could not read your move NFTs right now." };
   }
 
   const count = Number(balance > BigInt(max) ? BigInt(max) : balance);

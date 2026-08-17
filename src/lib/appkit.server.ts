@@ -2,7 +2,7 @@
 //
 // Circle's App Kit packages currently pull Solana's Anchor SDK into the server
 // bundle. Anchor executes CommonJS-only `exports.*` code during Worker startup,
-// taking down every SSR route. StreetRail settles on Arc, so these optional
+// taking down every SSR route. StreetRail settles on Midnight, so these optional
 // cross-chain SDK features report a graceful fallback instead of importing the
 // incompatible packages.
 

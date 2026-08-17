@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Loader2, RefreshCw, ExternalLink, CheckCircle2, XCircle, CircleDashed } from "lucide-react";
 import { listReceipts } from "@/lib/receipts.functions";
 import type { ReceiptHistory, RegistryReceipt, ReceiptKind } from "@/lib/receipts.server";
-import { TOKENS } from "@/lib/tokens";
+import { TOKENS, MIDNIGHT_EXPLORER } from "@/lib/tokens";
 
 const KIND_STYLE: Record<ReceiptKind, string> = {
   payout: "bg-glow/15 text-glow",
@@ -181,7 +181,7 @@ export function ReceiptHistoryPanel({ className = "" }: { className?: string }) 
 
       {data?.registry && (
         <a
-          href={`https://testnet.arcscan.app/address/${data.registry}`}
+          href={`${MIDNIGHT_EXPLORER}#address=${data.registry}`}
           target="_blank"
           rel="noreferrer"
           className="mt-4 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"

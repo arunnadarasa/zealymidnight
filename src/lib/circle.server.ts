@@ -112,7 +112,7 @@ export async function waitForTx(id: string, timeoutMs = 90_000): Promise<CircleT
 
 /**
  * Send value from the treasury wallet.
- * `tokenAddress` is omitted for Arc's native gas token (USDC).
+ * `tokenAddress` is omitted for the native gas token (USDC).
  */
 export async function treasuryTransfer(params: {
   to: string;

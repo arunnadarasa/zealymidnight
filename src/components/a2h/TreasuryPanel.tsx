@@ -11,7 +11,7 @@ export const GAS_FLOOR_USDC = 0.5;
 
 /**
  * Settlement treasury panel for A2H: address + balances. On Undeployed, payouts
- * settle as experimental mUSDC — no Circle Arc faucet / Arcscan chrome.
+ * settle as experimental mUSDC — no Circle faucet / EVM explorer chrome.
  */
 export function TreasuryPanel({ onLowGas }: { onLowGas?: (low: boolean) => void }) {
   const [address, setAddress] = useState<string | null>(null);

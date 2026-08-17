@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-/** Legacy Arc JSON-RPC proxy — disabled after Midnight pivot. */
+/** Legacy EVM JSON-RPC proxy — disabled after Midnight pivot. */
 export const Route = createFileRoute("/api/public/arc-rpc")({
   server: {
     handlers: {
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/api/public/arc-rpc")({
             error: {
               code: -32000,
               message:
-                "Arc RPC removed. StreetRail settles on Midnight Undeployed — use the indexer at VITE_INDEXER_URL.",
+                "JSON-RPC proxy removed. StreetRail settles on Midnight Undeployed — use the indexer at VITE_INDEXER_URL.",
             },
             id: null,
           },

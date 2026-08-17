@@ -10,11 +10,11 @@ export const INDEXER_WS_URL =
 export const PROOF_SERVER_URL =
   (import.meta.env.VITE_PROOF_SERVER_URL as string) || "http://localhost:6300";
 
-/** Indexer GraphQL is the explorer surface on Undeployed (no Arcscan). */
+/** Indexer GraphQL is the explorer surface on Undeployed. */
 export const MIDNIGHT_EXPLORER = INDEXER_URL;
 /** @deprecated use MIDNIGHT_EXPLORER */
 export const ARC_EXPLORER = MIDNIGHT_EXPLORER;
-/** Legacy Arc chain id — unused on Midnight; kept so old imports don't explode. */
+/** Legacy EVM chain id — unused on Midnight; kept so old imports don't explode. */
 export const ARC_CHAIN_ID = 0;
 export const ARC_RPC_URL = "";
 

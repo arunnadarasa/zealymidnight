@@ -116,7 +116,7 @@ export async function verify1271(
 
 /**
  * Approve a payload digest. On Undeployed (or without Circle), return an
- * Ed25519-only stub so the UI never surfaces CIRCLE_API_KEY / Arc chrome.
+ * Ed25519-only stub so the UI never surfaces CIRCLE_API_KEY / leftover EVM chrome.
  * Legacy: Circle treasury contract wallet IS the authorization.
  */
 export async function approveAuthOnChain(

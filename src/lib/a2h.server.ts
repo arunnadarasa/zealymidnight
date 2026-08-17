@@ -39,9 +39,9 @@ function rpcUrl() {
 }
 
 /**
- * Log reads use their own endpoint. The Alchemy Arc endpoint (ARC_RPC_URL on
+ * Log reads use their own endpoint. The Alchemy endpoint (ARC_RPC_URL on
  * the free tier) caps eth_getLogs at a 10-block range, which makes registry
- * history unreadable. The public Arc RPC has no such cap, so it is the default
+ * history unreadable. The public RPC has no such cap, so it is the default
  * here; override with ARC_LOGS_RPC_URL for a paid archive endpoint.
  */
 function logsRpcUrl() {
@@ -150,7 +150,7 @@ export interface PayoutHistory {
 
 /** Short, human reason. Raw JSON-RPC text never reaches the UI. */
 function humanReason(e: unknown): string {
-  if (isRateLimited(e)) return "The public Arc RPC is rate-limiting history reads right now.";
+  if (isRateLimited(e)) return "The public RPC is rate-limiting history reads right now.";
   if (isRangeError(e)) return "The RPC provider limits how far back log queries can reach.";
   return "Registry history could not be read from the RPC provider.";
 }
@@ -166,7 +166,7 @@ const MAX_CALLS = 12;
  * Read the registry's Logged events, newest first, optionally filtered by
  * recipient.
  *
- * The public Arc RPC rate-limits bursts and some providers cap the range, so we
+ * The public RPC rate-limits bursts and some providers cap the range, so we
  * page backwards over a short recent window with a hard call budget and give up
  * early rather than grinding through 429s. Never throws.
  */
@@ -176,7 +176,7 @@ const MIDNIGHT_A2H =
 export async function readPayouts(to?: string, lookback = 5_000n): Promise<PayoutHistory> {
   const wanted = to?.toLowerCase();
 
-  // Soft-align: do not call Arc RPC after Midnight pivot unless explicitly configured.
+  // Soft-align: do not call the legacy EVM RPC after Midnight pivot unless explicitly configured.
   if (!process.env["ARC_RPC_URL"] && !process.env["ARC_LOGS_RPC_URL"]) {
     const payouts = mergeSession([], wanted);
     return {
@@ -366,7 +366,7 @@ async function sendPayoutMidnight(params: {
 /**
  * Send a payout and anchor it.
  * Midnight Undeployed: mUSDC server-append + MoveRegistry appendEntry.
- * Legacy Arc path kept when CIRCLE_API_KEY is configured.
+ * Legacy EVM path kept when CIRCLE_API_KEY is configured.
  */
 export async function sendPayout(params: {
   to: string;

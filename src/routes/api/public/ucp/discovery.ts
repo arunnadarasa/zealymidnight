@@ -23,7 +23,7 @@ export const Route = createFileRoute("/api/public/ucp/discovery")({
             handlers: [
               {
                 id: "arc-testnet-usdc",
-                name: "Arc Testnet USDC",
+                name: "USDC",
                 spec: "https://ucp.dev/latest/specification/overview/",
                 version: UCP_VERSION,
                 config_schema: "https://ucp.dev/schemas/0.1/payment-handler",

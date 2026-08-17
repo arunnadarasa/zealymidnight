@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-/** Midnight Undeployed tip card (Circle Arc treasury is out of path). */
+/** Midnight Undeployed tip card (Circle treasury is out of path). */
 export function TreasuryCard({ address }: { address?: string }) {
   const [copied, setCopied] = useState(false);
   const label = address?.trim() || "streetrail:treasury:v1";

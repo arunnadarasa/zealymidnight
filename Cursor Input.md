@@ -2,7 +2,7 @@
 
 **Audience:** Lovable AI / Cursor agents continuing this repo.  
 **Repo:** https://github.com/arunnadarasa/zealymidnight (push Midnight work **here only**).  
-**Do not** force-push, rebase, or rewrite published Lovable history. **Do not** push Midnight Undeployed work to `streetdancearc` / Arc remotes.
+**Do not** force-push, rebase, or rewrite published Lovable history. **Do not** push Midnight Undeployed work to `streetdancearc` remotes.
 
 **Cursor skill (load first):** [`.cursor/skills/midnight-undeployed/SKILL.md`](./.cursor/skills/midnight-undeployed/SKILL.md) — Local Undeployed playbook (server-append, insert-only Compact, public npm, witness binding). Detail: [reference.md](./.cursor/skills/midnight-undeployed/reference.md). Lovable-oriented Midnight skill (preview/preprod + Undeployed): [`.agents/skills/lovable-midnight/SKILL.md`](./.agents/skills/lovable-midnight/SKILL.md).
 
@@ -56,7 +56,7 @@ Shared constants (deploy + every append path must match or → **117**): `src/li
    Commit when asked; push to `origin` = zealymidnight. No `--force` to main. No secrets (`.env`, LevelDB) in commits.
 
 7. **UX copy**  
-   User-facing strings = Midnight / Lace / mUSDC / local indexer — not Arcscan, Arc Testnet, Circle faucet, Privy, or raw `CIRCLE_API_KEY`.
+   User-facing strings = Midnight / Lace / mUSDC / local indexer — not EVM explorers, Circle faucet, Privy, or raw `CIRCLE_API_KEY`.
 
 8. **Public clone must install from public npm**  
    Never commit a `bun.lock` generated inside Lovable. Sandbox tarball URLs (`europe-west*-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache`) 403 outside Lovable. `@lovable.dev/vite-tanstack-config` is **not** on the public registry. Use public Vite + TanStack Start plugins (`tanstackStart()`, `@vitejs/plugin-react`, `@tailwindcss/vite`, `nitro/vite`).
@@ -123,10 +123,10 @@ Buy path atomicity is **API-level only**: mUSDC then MoveNft.buy, same genesis f
 2. Server-append write path (Lace optional for identity only).  
 3. Insert-only MoveNft (`1aa7194` lineage) + insert-only MidnightUSDC (`65870c4`).  
 4. Deploy JSON address resolution; move-nft state reset on deploy.  
-5. Market / gallery / activity on Undeployed (off Arc pause path).  
+5. Market / gallery / activity on Undeployed (off the paused EVM market path).  
 6. Pinata server-only (`PINATA_JWT`, never `VITE_PINATA_*`).  
 7. A2H `railBusy` + `useElapsed` timers (`f1c44d5`, `160eff2`) — cold prove ~4 min.  
-8. Arc→Midnight UX scrub (shop, A2A, primer, judge, mandate/treasury) — `9d917d7`, `6893850`, `7997c8b`, `a2583d3`.  
+8. EVM→Midnight UX scrub (shop, A2A, primer, judge, mandate/treasury) — `9d917d7`, `6893850`, `7997c8b`, `a2583d3`.  
 9. `append-entry` fresh wallet + `stop()` (no long-lived `ctxPromise`).  
 10. Claim soft-fails registry append (aligned with payout).  
 11. Humanized RpcError **117** copy in `a2h-engine.server.ts`.  
@@ -147,7 +147,7 @@ Buy path atomicity is **API-level only**: mUSDC then MoveNft.buy, same genesis f
 | 5 | LevelDB goes stale again after success | Later claim fails 117 | Re-run recovery loop; one UI action |
 | 6 | Claim threw on append after mUSDC OK | “Claim failed” with transfer on chain | Soft-fail append |
 | 7 | Parallel A2H clicks / agents | Database failed to open | `railBusy` + exclusive ops |
-| 8 | Wrong Vite tree | Arc UX on `:8080` | Confirm `/tmp/zealy-recover` or zealymidnight cwd |
+| 8 | Wrong Vite tree | Stale EVM UX on `:8080` | Confirm `/tmp/zealy-recover` or zealymidnight cwd |
 | 9 | Vite not restarted / no hard-refresh | Dead contract / missing timers | Restart + hard-refresh |
 | 10 | `bun <<'EOF'` | Help text, no script | `bun scripts/foo.mjs` |
 | 11 | Docker workdir vanished | Containers orphaned | Recreate via this repo `docker-compose.yml` |
@@ -190,7 +190,7 @@ Buy path atomicity is **API-level only**: mUSDC then MoveNft.buy, same genesis f
 9. Resolve addresses: undeployed JSON → then env.  
 10. Document wallet session ≠ HTTP request: Undeployed = server genesis; preview/preprod = Lace.  
 11. Keep README + this file + artefacts in sync with every green e2e / recovery.  
-12. Scrub Arc chrome when user screenshots still show Circle/Arcscan/`CIRCLE_API_KEY`.  
+12. Scrub leftover EVM/Circle chrome when user screenshots still show Circle/`CIRCLE_API_KEY`.  
 13. Before claiming “clone and follow the README”: `bun install` from a **public** lockfile, `bun run typecheck`, `bun run dev` with **only** `.env.example` (no Supabase), then `z-check`.  
 14. After any Compact auth change: compile → artefacts → wipe LevelDB → full deploy → restart Vite → `z-check`. Circuit **signatures** can stay the same; witnesses must actually bind.
 
@@ -256,10 +256,10 @@ Image pins: node `0.22.5`, indexer `4.0.2`, proof-server `8.0.3` (see README / c
 | Server mint/list/buy/cancel/transfer | Working |
 | E2E mint → list → buy | Verified (`E2E_OK`) |
 | A2H railBusy + timers + soft-fail claim | Shipped |
-| Arc → Midnight UX (incl. CIRCLE scrub) | Shipped |
+| EVM → Midnight UX (incl. CIRCLE scrub) | Shipped |
 | appendEntry fresh wallet | Shipped |
 | Pinata optional clip | Wired server-side |
-| Arc ERC-721 market | Feature-gated / out of path |
+| Legacy EVM ERC-721 market | Feature-gated / out of path |
 | Judge “five deployed contracts” | Keep in sync with `CONTRACTS.length` |
 | RpcError 117 | Recoverable via wipe + compose + full deploy + 2× transfer verify |
 | Fresh clone `bun install` (public npm) | Working — no Lovable registry |
@@ -273,7 +273,7 @@ Image pins: node `0.22.5`, indexer `4.0.2`, proof-server `8.0.3` (see README / c
 
 - Confirm **cwd** and that Vite serves **this** tree before claiming UX bugs.  
 - After Compact or deploy JSON changes: compile → artefacts → wipe if needed → deploy → restart Vite → hard-refresh → verify with scripts before asking the user to click.  
-- When user says “scrub Arc”: hunt user-visible strings + mandate `detail` + treasury panel + primer/judge — not only the word “Arc”.  
+- When user says “scrub leftover EVM chrome”: hunt user-visible strings + mandate `detail` + treasury panel + primer/judge — not only one brand name.  
 - When user asks to push: commit docs + relevant code to **zealymidnight** only.  
 - Do not invent Mainnet / peg claims for mUSDC.  
 - Do not commit a lockfile produced inside Lovable. If `bun.lock` contains `pkg.dev/lovable`, delete it and `bun install` on a public machine.  

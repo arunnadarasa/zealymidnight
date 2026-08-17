@@ -4,7 +4,7 @@ import { ExternalLink } from "lucide-react";
 import { getOnChainMetrics } from "@/lib/metrics.functions";
 import type { OnChainMetrics } from "@/lib/metrics.server";
 
-/** Static copy shown before the feed resolves or when Arc RPC is unreachable. */
+/** Static copy shown before the feed resolves or when the indexer is unreachable. */
 const FALLBACK = [
   { key: "drop", value: "7", label: "Pieces in the current drop", href: null as string | null },
   { key: "tokens", value: "3", label: "Stablecoins accepted at checkout", href: null },
@@ -71,8 +71,8 @@ export function LiveMetrics() {
           className={`inline-block size-1.5 rounded-full ${isLive ? "bg-glow" : "bg-muted-foreground/50"}`}
         />
         {isLive
-          ? `Read live from Arc Testnet${data?.scannedBlocks ? ` · last ${data.scannedBlocks.toLocaleString("en-US")} blocks` : ""} · tap a figure for the explorer`
-          : "Arc activity feed loading — showing catalogue figures"}
+          ? `Read live from Midnight Undeployed${data?.scannedBlocks ? ` · last ${data.scannedBlocks.toLocaleString("en-US")} blocks` : ""} · tap a figure for the indexer`
+          : "Activity feed loading — showing catalogue figures"}
       </p>
     </div>
   );

@@ -65,7 +65,7 @@ export async function settleOnMidnight(
   };
 }
 
-/** @deprecated alias — Arc settlement replaced by Midnight Undeployed mUSDC */
+/** @deprecated alias — EVM settlement replaced by Midnight Undeployed mUSDC */
 export const settleOnArc = settleOnMidnight;
 
 export function settlementNote(token: TokenKey): string {

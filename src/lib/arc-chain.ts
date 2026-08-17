@@ -1,10 +1,10 @@
 import { defineChain } from "viem";
 
-// CRITICAL: nativeCurrency.decimals = 6 because USDC is the gas token on Arc.
+// CRITICAL: nativeCurrency.decimals = 6 because USDC is the gas token on this EVM testnet.
 // Using 18 (the default EVM assumption) will corrupt every balance/fee display by 10^12.
 export const arcTestnet = defineChain({
   id: 5042002,
-  name: "Arc Testnet",
+  name: "Legacy EVM testnet",
   network: "arc-testnet",
   nativeCurrency: { name: "USD Coin", symbol: "USDC", decimals: 6 },
   rpcUrls: {
@@ -14,6 +14,6 @@ export const arcTestnet = defineChain({
     },
   },
   blockExplorers: {
-    default: { name: "Arcscan", url: "https://testnet.arcscan.app" },
+    default: { name: "Block explorer", url: "https://testnet.arcscan.app" },
   },
 });

@@ -88,9 +88,9 @@ export function localResource(origin = ""): DiscoveredResource {
     asset: "USDC",
     amount: "10000",
     category: "COMMERCE",
-    tags: ["x402", "merch", "streetdance", "arc", "usdc", "eurc", "cirbtc"],
+    tags: ["x402", "merch", "streetdance", "midnight", "usdc", "eurc", "cirbtc"],
     website: origin || "https://streetrail.lovable.app",
-    description: "x402 checkout for street-dance merch, settled on Arc Testnet in USDC, EURC or cirBTC.",
+    description: "x402 checkout for street-dance merch, settled on Midnight Undeployed in experimental mUSDC.",
     accepts,
     networks: [ARC_CAIP2],
   };

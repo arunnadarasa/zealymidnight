@@ -161,7 +161,7 @@ export const checkoutComparison = [
   {
     dimension: "Fees",
     card: "2.9% + fixed, plus 10–15% FX and cross-border loading in these corridors",
-    usdc: "Sub-cent gas on Arc, paid in USDC itself",
+    usdc: "Sub-cent fees on Midnight, paid in experimental mUSDC",
   },
   {
     dimension: "Settlement",

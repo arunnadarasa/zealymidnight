@@ -1,4 +1,4 @@
-// Server-only reads for the Move Rights marketplace on Arc Testnet.
+// Server-only reads for the Move Rights marketplace (legacy EVM path).
 //
 // The market contract is non-custodial: sellers keep their token and only
 // grant an approval, so every listing is verified against live ownership
@@ -96,7 +96,7 @@ function formatUnits(atomic: bigint, decimals: number): string {
 }
 
 const MIDNIGHT_MARKET =
-  "Legacy Arc MoveMarket is off — use Compact MoveNft list/buy on /market (mUSDC settle).";
+  "Legacy EVM MoveMarket is off — use Compact MoveNft list/buy on /market (mUSDC settle).";
 
 /** Read every active listing. Never throws. */
 export async function listMarket(max = 24): Promise<{
@@ -123,7 +123,7 @@ export async function listMarket(max = 24): Promise<{
       functionName: "activeCount",
     })) as bigint;
   } catch {
-    return { ...base, items: [], detail: "Arc RPC could not read the marketplace right now." };
+    return { ...base, items: [], detail: "Could not read the marketplace right now." };
   }
 
   const n = Number(count > BigInt(max) ? BigInt(max) : count);

@@ -1,4 +1,4 @@
-// Live on-chain activity across StreetRail's four verified Arc contracts.
+// Live on-chain activity across StreetRail Compact contracts.
 //
 // Everything here is read-only and best-effort: any single source that fails
 // is reported as `null` rather than throwing, so the landing page can fall
@@ -6,13 +6,14 @@
 
 import { createPublicClient, http, type Address } from "viem";
 import { arcTestnet } from "@/lib/arc-chain";
+import { INDEXER_URL } from "@/lib/tokens";
 import { readReceipts } from "@/lib/receipts.server";
 import registry from "@/data/contract.json";
 import nft from "@/data/move-nft.json";
 import market from "@/data/move-market.json";
 import authorizer from "@/data/street-rail-authorizer.json";
 
-const EXPLORER = "https://testnet.arcscan.app";
+const EXPLORER = INDEXER_URL;
 
 const ERC721_SUPPLY_ABI = [
   {
@@ -114,7 +115,7 @@ export async function readOnChainMetrics(): Promise<OnChainMetrics> {
     {
       key: "records",
       value: fmt(receipts === null ? null : receipts.length),
-      label: "Registry records on Arc",
+      label: "Registry records on Midnight",
       href: `${EXPLORER}/address/${registry.address}`,
     },
     {

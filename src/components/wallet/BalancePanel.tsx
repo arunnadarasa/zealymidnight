@@ -65,7 +65,7 @@ export function BalancePanel({ onClose }: { onClose?: () => void }) {
           ) : (
             <RefreshCw className="h-3 w-3" />
           )}
-          {loading ? "Reading Arc…" : "Refresh"}
+          {loading ? "Reading…" : "Refresh"}
         </button>
       </div>
 
@@ -116,7 +116,7 @@ export function BalancePanel({ onClose }: { onClose?: () => void }) {
       </ul>
 
       <p className="mt-3 text-[10px] leading-relaxed text-muted-foreground">
-        Session identity for Undeployed. Prefer `/market` mUSDC for settlement; Arc EVM balances
+        Session identity for Undeployed. Prefer `/market` mUSDC for settlement; EVM balances
         are not the source of truth here.
       </p>
 
