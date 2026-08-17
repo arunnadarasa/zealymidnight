@@ -4,6 +4,8 @@
 **Repo:** https://github.com/arunnadarasa/zealymidnight (push Midnight work **here only**).  
 **Do not** force-push, rebase, or rewrite published Lovable history. **Do not** push Midnight Undeployed work to `streetdancearc` / Arc remotes.
 
+**Cursor skill (load first):** [`.cursor/skills/midnight-undeployed/SKILL.md`](./.cursor/skills/midnight-undeployed/SKILL.md) — Local Undeployed playbook (server-append, insert-only Compact, public npm, witness binding). Detail: [reference.md](./.cursor/skills/midnight-undeployed/reference.md). Lovable-oriented Midnight skill (preview/preprod + Undeployed): [`.agents/skills/lovable-midnight/SKILL.md`](./.agents/skills/lovable-midnight/SKILL.md).
+
 This file is the **ops + lessons brain**. Prefer it over rediscovering dust-wallet / LevelDB failures from scratch.
 
 External refs (skim before long rabbit holes):
@@ -56,6 +58,18 @@ Shared constants (deploy + every append path must match or → **117**): `src/li
 7. **UX copy**  
    User-facing strings = Midnight / Lace / mUSDC / local indexer — not Arcscan, Arc Testnet, Circle faucet, Privy, or raw `CIRCLE_API_KEY`.
 
+8. **Public clone must install from public npm**  
+   Never commit a `bun.lock` generated inside Lovable. Sandbox tarball URLs (`europe-west*-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache`) 403 outside Lovable. `@lovable.dev/vite-tanstack-config` is **not** on the public registry. Use public Vite + TanStack Start plugins (`tanstackStart()`, `@vitejs/plugin-react`, `@tailwindcss/vite`, `nitro/vite`).
+
+9. **Midnight Undeployed does not need Supabase**  
+   Do not register `attachSupabaseAuth` as global `functionMiddleware`. A missing `SUPABASE_URL` / `SUPABASE_PUBLISHABLE_KEY` must not 500 the app. Guard the client (Pinata-style); leave those keys out of `.env.example`.
+
+10. **Witness hash ≠ empty is not access control**  
+    MandateVault pattern: `assert(pk == buyer)` (or stored `minter_pk` / `signing_key_fpr` / `faucet_claimed.member(fromPk)`). Any non-empty secret satisfies `auth != pad(32, "")`.
+
+11. **Quest / awesome-list README attribution**  
+    Near the top of `README.md`, exact sentence: `This project is built on the Midnight Network.` Paraphrases do not count. `bun run typecheck` (`tsc --noEmit`) must exit 0.
+
 ---
 
 ## Five contracts (judge + deploy)
@@ -65,7 +79,7 @@ Shared constants (deploy + every append path must match or → **117**): `src/li
 | moveRegistry | `MoveRegistry.compact` | `appendEntry` | `abodc:author:v1` |
 | moveNft | `MoveNft.compact` | `mint`, `listSale`, `buy`, `cancel`, `transfer` | `movenft:minter:v1` |
 | mandateVault | `MandateVault.compact` | `anchorMandate` | `ap2:buyer:v1` |
-| orderLedger | `OrderLedger.compact` | `recordOrder` | `ucp:merchant:v1` |
+| orderLedger | `OrderLedger.compact` | `recordSigningKey`, `recordOrder` | `ucp:merchant:v1` |
 | midnightUsdc | `MidnightUSDC.compact` | `faucet`, `transfer` | `musdc:signer:v1` |
 
 UI list: `src/lib/contracts.ts` → `CONTRACTS` (length **5**). Judge heading must say **five** deployed contracts (`src/routes/judge.tsx`).
@@ -76,21 +90,28 @@ UI list: `src/lib/contracts.ts` → `CONTRACTS` (length **5**). Judge heading mu
 owners: Map       // insert on mint only
 listed_price: Map // insert on listSale / cancel-with-new-key
 sales: Map        // append buy/transfer with fresh random id
+minter_pk         // Bytes<32> — first call discloses pk; later assert(pk == minter_pk)
 ```
 
 Owner for demo UX: `src/data/move-nft-state.undeployed.json` (reset on deploy).  
 Owner PK = `sha256("movenft:owner:v1:" + label)` — **not** raw `sha256(label)`.  
-Circuit name is **`listSale`** (`list` is a Compact keyword).
+Circuit name is **`listSale`** (`list` is a Compact keyword).  
+Minter auth is **in-circuit** (`movenft:minter:v1` vs stored `minter_pk`). Per-token owner stays off-chain because `owners.lookup` / overwrite is dust-unsafe.
+
+### OrderLedger auth
+
+`recordSigningKey` bootstraps `signing_key_fpr`. **`recordOrder` must read `merchantSecret()`** and `assert(pk == signing_key_fpr)` after `signing_key_fpr != empty`. An unused witness on the order path fails Aliit review even if `recordSigningKey` is correct. Server already calls `recordSigningKey` first (`src/lib/record-order.server.ts`).
 
 ### MidnightUSDC ledger design
 
 ```
 credits / credit_to   // insert by nonce (transfer) or once by pk (faucet)
-faucet_claimed        // Set
+faucet_claimed        // Set — transfer requires member(fromPk)
 spent_nonces          // Set
 ```
 
-**Do not** overwrite `balances[from]` / `balances[to]`. That was the A2H settle/claim `SubmissionError` after MoveNft was already fixed.
+**Do not** overwrite `balances[from]` / `balances[to]`. That was the A2H settle/claim `SubmissionError` after MoveNft was already fixed.  
+**Do not** replace spend auth with `fromPk != pad(32, "")` — that is the same empty-hash undercut as old MoveNft. Bind the witness: `assert(faucet_claimed.member(disclose(fromPk)), "signer")`.
 
 Buy path atomicity is **API-level only**: mUSDC then MoveNft.buy, same genesis family, sequential sessions.
 
@@ -110,7 +131,8 @@ Buy path atomicity is **API-level only**: mUSDC then MoveNft.buy, same genesis f
 10. Claim soft-fails registry append (aligned with payout).  
 11. Humanized RpcError **117** copy in `a2h-engine.server.ts`.  
 12. Circle ERC-1271 skipped on Undeployed / missing `CIRCLE_API_KEY` (`erc1271.server.ts`) — UI never shows `missing_secret: CIRCLE_API_KEY`.  
-13. Verified 2× sequential `musdcTransfer` after wipe + full deploy (`scripts/debug-musdc-transfer.mjs`).
+13. Verified 2× sequential `musdcTransfer` after wipe + full deploy (`scripts/debug-musdc-transfer.mjs`).  
+14. Aliit R1 recovery: public Vite config + regenerated `bun.lock`; Supabase optional; MoveNft `minter_pk`; OrderLedger `recordOrder` binds merchant pk; mUSDC `faucet_claimed.member(fromPk)`; `purchase` passes `toHex`; `bun run typecheck` clean; `z-check` → `E2E_OK`.
 
 ---
 
@@ -136,6 +158,12 @@ Buy path atomicity is **API-level only**: mUSDC then MoveNft.buy, same genesis f
 | 16 | Stale `/judge` Pending rows | After chain wipe | Clear localStorage panel — not live stuck txs |
 | 17 | RpcError **196** | Verifier mismatch | compile → artefacts → wipe → deploy |
 | 18 | `VITE_PINATA_*` | JWT leak / CF build break | Server-only `PINATA_JWT` |
+| 19 | Lovable `bun.lock` / `@lovable.dev/vite-tanstack-config` | Fresh clone `bun install` HTTP 403 | Public plugins in `vite.config.ts`; regenerate lockfile **outside** Lovable |
+| 20 | Global `attachSupabaseAuth` | `bun run dev` 500; undocumented `SUPABASE_*` | Remove from `src/start.ts`; guard supabase client |
+| 21 | `assert(auth != pad(32, ""))` / `fromPk != empty` | “Privacy on paper”; any secret works | Stored pk / `faucet_claimed.member` / MandateVault `pk == buyer` |
+| 22 | `recordOrder` never reads `merchantSecret` | Witness unused on the order path | Assert `pk == signing_key_fpr` |
+| 23 | `musdcTransfer({ amountAtomic })` | `tsc` error; settle path cannot typecheck | Pass `toHex` (sha256 of treasury label) |
+| 24 | Missing exact README attribution | awesome-dapps PR blocked | Exact: `This project is built on the Midnight Network.` |
 
 `SubmissionError` / `FiberFailure` often **wrap** `RpcError 1010: Invalid Transaction: Custom error: 117`.
 
@@ -162,7 +190,9 @@ Buy path atomicity is **API-level only**: mUSDC then MoveNft.buy, same genesis f
 9. Resolve addresses: undeployed JSON → then env.  
 10. Document wallet session ≠ HTTP request: Undeployed = server genesis; preview/preprod = Lace.  
 11. Keep README + this file + artefacts in sync with every green e2e / recovery.  
-12. Scrub Arc chrome when user screenshots still show Circle/Arcscan/`CIRCLE_API_KEY`.
+12. Scrub Arc chrome when user screenshots still show Circle/Arcscan/`CIRCLE_API_KEY`.  
+13. Before claiming “clone and follow the README”: `bun install` from a **public** lockfile, `bun run typecheck`, `bun run dev` with **only** `.env.example` (no Supabase), then `z-check`.  
+14. After any Compact auth change: compile → artefacts → wipe LevelDB → full deploy → restart Vite → `z-check`. Circuit **signatures** can stay the same; witnesses must actually bind.
 
 ---
 
@@ -187,6 +217,7 @@ rm -rf midnight-level-db .midnight && bun run midnight:deploy
 bun scripts/debug-musdc-transfer.mjs
 bun scripts/redeploy-musdc.mjs          # only if state is known-clean
 bun scripts/z-check.mjs
+bun run typecheck
 bun run dev -- --port 8080 --host 127.0.0.1
 ```
 
@@ -211,6 +242,8 @@ Image pins: node `0.22.5`, indexer `4.0.2`, proof-server `8.0.3` (see README / c
 | Tx history Pending/Confirmed | `src/components/dance/TxHistoryPanel.tsx`, `src/lib/tx-status.functions.ts` |
 | A2H inbox / railBusy | `src/components/a2h/*` |
 | Docs | `README.md`, this file |
+| Public Vite (no Lovable) | `vite.config.ts`, `bunfig.toml`, `package.json` |
+| Optional Supabase | `src/start.ts`, `src/integrations/supabase/client.ts` |
 
 ---
 
@@ -229,6 +262,10 @@ Image pins: node `0.22.5`, indexer `4.0.2`, proof-server `8.0.3` (see README / c
 | Arc ERC-721 market | Feature-gated / out of path |
 | Judge “five deployed contracts” | Keep in sync with `CONTRACTS.length` |
 | RpcError 117 | Recoverable via wipe + compose + full deploy + 2× transfer verify |
+| Fresh clone `bun install` (public npm) | Working — no Lovable registry |
+| `bun run dev` without Supabase | Working (`/` `/judge` `/moves` `/market` `/shop` 200) |
+| Compact witness binding (minter / merchant / mUSDC signer) | Shipped |
+| `bun run typecheck` | Clean |
 
 ---
 
@@ -238,7 +275,26 @@ Image pins: node `0.22.5`, indexer `4.0.2`, proof-server `8.0.3` (see README / c
 - After Compact or deploy JSON changes: compile → artefacts → wipe if needed → deploy → restart Vite → hard-refresh → verify with scripts before asking the user to click.  
 - When user says “scrub Arc”: hunt user-visible strings + mandate `detail` + treasury panel + primer/judge — not only the word “Arc”.  
 - When user asks to push: commit docs + relevant code to **zealymidnight** only.  
-- Do not invent Mainnet / peg claims for mUSDC.
+- Do not invent Mainnet / peg claims for mUSDC.  
+- Do not commit a lockfile produced inside Lovable. If `bun.lock` contains `pkg.dev/lovable`, delete it and `bun install` on a public machine.  
+- Aliit / Zealy: a circuit that hashes a witness and only checks non-empty is a **reject**. Copy MandateVault.
+
+---
+
+## Aliit R1 (2026-08-16) — what actually failed the quest
+
+Reviewed as published on GitHub. Compact + z-check worked **after a reviewer-only install workaround**. The quest still requires another developer can clone and follow the README.
+
+| Finding | Lesson |
+| --- | --- |
+| **CRITICAL** `bun install` 403 | Lockfile had 128 Lovable sandbox tarball URLs, zero `registry.npmjs.org`. `@lovable.dev/vite-tanstack-config` is not public. Rewrite `vite.config.ts` with `tanstackStart` / react / tailwind / nitro; strip `@lovable.dev/*` from `bunfig.toml`; regenerate `bun.lock` outside Lovable. |
+| **CRITICAL** `bun run dev` 500 | Root loader `getPublicConfig` ran through `attachSupabaseAuth` → supabase client threw on missing `SUPABASE_URL` / `SUPABASE_PUBLISHABLE_KEY`. Those names were not in `.env.example`. Midnight path does not need Supabase. Drop global middleware; guard the client. |
+| **CRITICAL** MoveNft / mUSDC “auth” | Circuits hashed the witness then `assert(auth != pad(32, ""))` / `fromPk != empty`. Any secret passes. Fix: stored `minter_pk` bootstrap (same shape as OrderLedger `signing_key_fpr`); mUSDC `assert(faucet_claimed.member(fromPk))` while staying insert-only. MandateVault `pk == buyer` is the reference. |
+| **RECOMMENDED** unused `merchantSecret` | `recordOrder` never read the witness (`recordSigningKey` did). Bind `pk == signing_key_fpr` on the order path. |
+| **RECOMMENDED** typecheck | `POST /api/public/purchase` called `musdcTransfer({ amountAtomic })` without `toHex`. `tsc --noEmit` was 31 errors. Ship `bun run typecheck`; hash treasury label like `musdc-transfer.ts`. |
+| Attribution | awesome-dapps requires the **exact** README sentence `This project is built on the Midnight Network.` near the top. Checklist-marked-done is not enough. |
+
+Verified after the fix: public `bun install`, typecheck 0, routes 200 without Supabase, deploy five addresses, `z-check` `E2E_OK`.
 
 ---
 

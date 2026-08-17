@@ -182,6 +182,16 @@
         "type-name": "Bytes",
         "length": 32
       }
+    },
+    {
+      "name": "minter_pk",
+      "index": 3,
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
     }
   ]
 }

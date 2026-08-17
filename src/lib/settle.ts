@@ -10,12 +10,8 @@ export interface SettleResult {
   explorer: string;
   simulated?: boolean;
   network?: string;
-}
-
-interface EmbeddedWallet {
-  address: string;
-  getEthereumProvider?: () => Promise<unknown>;
-  switchChain?: (id: number) => Promise<void>;
+  nonce?: string;
+  paymentSignature?: string;
 }
 
 /**
@@ -23,7 +19,7 @@ interface EmbeddedWallet {
  * Lace cannot sign on Undeployed — the server uses the genesis wallet.
  */
 export async function settleOnMidnight(
-  _wallet: EmbeddedWallet | null | undefined,
+  _wallet: { address?: string } | null | undefined,
   token: TokenKey,
   _to: string,
   atomic: bigint,

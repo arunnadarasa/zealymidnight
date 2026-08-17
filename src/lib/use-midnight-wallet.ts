@@ -142,15 +142,13 @@ export function useMidnightWallet() {
       }
       if (!connectedApi) throw lastErr ?? new Error("Lace connect failed");
       const shielded =
-        typeof connectedApi.getShieldedAddress === "function"
-          ? await connectedApi.getShieldedAddress().catch(() => null)
+        typeof connectedApi.getShieldedAddresses === "function"
+          ? await connectedApi.getShieldedAddresses().catch(() => null)
           : null;
       const unshielded = await readUnshieldedAddress(connectedApi);
       setApi(connectedApi);
       setNetwork(used);
-      setAddress(
-        (typeof shielded === "string" ? shielded : null) || unshielded || "connected",
-      );
+      setAddress(shielded?.shieldedAddress || unshielded || "connected");
       setUnshieldedAddress(unshielded);
       setStatus("connected");
       if (used !== "undeployed") {

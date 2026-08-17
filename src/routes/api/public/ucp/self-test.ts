@@ -150,8 +150,8 @@ export const Route = createFileRoute("/api/public/ucp/self-test")({
         }
 
         // 5. Asset configuration
-        check("Arc network configured", ARC_CAIP2 === "eip155:5042002");
-        check("USDC contract configured", USDC_ARC.startsWith("0x") && USDC_ARC.length === 42);
+        check("Midnight network configured", ARC_CAIP2.startsWith("midnight:"));
+        check("mUSDC asset configured", USDC_ARC.startsWith("midnight:"));
 
         const failed = results.filter((r) => !r.ok).length;
         const result: SelfTestResult = {

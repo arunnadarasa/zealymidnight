@@ -82,7 +82,7 @@ export function authorizerUrl() {
 }
 
 export interface OnChainAuth {
-  scheme: "erc-1271";
+  scheme: "erc-1271" | "midnight-mandate-vault" | "midnight-tx";
   authorizer: string;
   authorizerUrl: string;
   network: string;

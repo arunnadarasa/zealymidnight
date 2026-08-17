@@ -1,5 +1,42 @@
 {
-  "contractAddress": "d530c85d408a5e2179ed09c914eb80a04ffcf7ac2b5db7527b5d09e23a901f7a",
-  "tokens": [],
-  "activity": []
+  "contractAddress": "22eff5b1495ac6a20c5b62513a6d0ea5caf9c3428c9f14475c9aee0fadf4e7cc",
+  "tokens": [
+    {
+      "tokenId": "1",
+      "ownerPk": "3b93cc53ea4ae10e53ec0e97e2c0ed901cbcc21df2fd13d0dc9f5270176580fb",
+      "ownerLabel": "mn_addr_buyer_e2e",
+      "uri": "{\"kind\":\"move-log\",\"cid\":\"bafyZ\",\"at\":\"2026-08-17T21:20:10.858Z\"}",
+      "name": "Move · bafyZ",
+      "listedPriceAtomic": "0",
+      "listed": false,
+      "mintTxId": "00126b185667729055dfe203c024f2fd9947ad2f5e89a713fe5244046350d5d0ca",
+      "updatedAt": "2026-08-17T21:24:38.327Z"
+    }
+  ],
+  "activity": [
+    {
+      "kind": "buy",
+      "tokenId": "1",
+      "txId": "0016a8cbb00a723471a992b06ba914e5ce7d24c8df651c054b3842853e80b8e786",
+      "actor": "mn_addr_buyer_e2e",
+      "counterparty": "b69b5744803eb223b75ffe397aa51c17dde168cb7d282bbae6ef559dfead59be",
+      "priceAtomic": "5000000",
+      "at": "2026-08-17T21:24:38.327Z"
+    },
+    {
+      "kind": "list",
+      "tokenId": "1",
+      "txId": "00339d7cd80dd3ff29f814ac057881eb4ae110d68473ce696f953694279368245a",
+      "actor": "mn_addr_seller_e2e",
+      "priceAtomic": "5000000",
+      "at": "2026-08-17T21:21:56.435Z"
+    },
+    {
+      "kind": "mint",
+      "tokenId": "1",
+      "txId": "00126b185667729055dfe203c024f2fd9947ad2f5e89a713fe5244046350d5d0ca",
+      "actor": "mn_addr_seller_e2e",
+      "at": "2026-08-17T21:21:02.941Z"
+    }
+  ]
 }

@@ -1,6 +1,10 @@
-// @lovable.dev/vite-tanstack-config already includes TanStack/React/tailwind/nitro plugins.
 import path from "node:path";
-import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { defineConfig, loadEnv } from "vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+import { nitro } from "nitro/vite";
 import wasm from "vite-plugin-wasm";
 import topLevelAwait from "vite-plugin-top-level-await";
 import type { Plugin } from "vite";
@@ -36,12 +40,43 @@ function midnightSsrStub(): Plugin {
   };
 }
 
-export default defineConfig({
-  tanstackStart: {
-    server: { entry: "server" },
-  },
-  vite: {
-    plugins: [midnightSsrStub(), wasm(), clientTopLevelAwait()],
+export default defineConfig(({ command, mode }) => {
+  const loadedEnv = loadEnv(mode, process.cwd(), "VITE_");
+  const envDefine = Object.fromEntries(
+    Object.entries(loadedEnv).map(([key, value]) => [`import.meta.env.${key}`, JSON.stringify(value)]),
+  );
+
+  return {
+    define: envDefine,
+    css: { transformer: "lightningcss" },
+    resolve: {
+      alias: { "@": path.resolve("src") },
+      dedupe: [
+        "react",
+        "react-dom",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+        "@tanstack/react-query",
+        "@tanstack/query-core",
+      ],
+    },
+    server: { host: "::", port: 8080 },
+    plugins: [
+      tailwindcss(),
+      tsconfigPaths({ projects: ["./tsconfig.json"] }),
+      tanstackStart({
+        server: { entry: "server" },
+        importProtection: {
+          behavior: "error",
+          client: { files: ["**/server/**"], specifiers: ["server-only"] },
+        },
+      }),
+      ...(command === "build" ? [nitro({ defaultPreset: "cloudflare-module" })] : []),
+      react(),
+      midnightSsrStub(),
+      wasm(),
+      clientTopLevelAwait(),
+    ],
     build: {
       target: "esnext",
       commonjsOptions: { transformMixedEsModules: true, defaultIsModuleExports: "auto" },
@@ -70,5 +105,5 @@ export default defineConfig({
         "cpu-features",
       ],
     },
-  },
+  };
 });

@@ -34,7 +34,7 @@ export type PrivateState = {
   merchantSecret?: Uint8Array;
 };
 
-export function resolveContractModulePath(contractName = PRIMARY_CONTRACT): string {
+export function resolveContractModulePath(contractName: string = PRIMARY_CONTRACT): string {
   const zk = path.resolve(ROOT, "contracts", "managed", contractName);
   const candidates = [
     path.resolve(ROOT, "public", "contract", contractName, "contract", "index.js"),
@@ -58,7 +58,7 @@ export function resolveContractModulePath(contractName = PRIMARY_CONTRACT): stri
   return found;
 }
 
-export function zkConfigPath(contractName = PRIMARY_CONTRACT): string {
+export function zkConfigPath(contractName: string = PRIMARY_CONTRACT): string {
   const p = path.resolve(ROOT, "contracts", "managed", contractName);
   if (!fs.existsSync(p)) {
     throw new Error(`Missing ${p}. Run: bun run midnight:compile`);
@@ -101,7 +101,9 @@ export function initialPrivateStateFor(contractName: string, secret: Uint8Array)
 export async function buildCompiledContract(opts?: {
   contractName?: string;
   secretForDeploy?: Uint8Array;
-}) {
+  // Dynamic Compact artefacts don't share one CompiledContract generic.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+}): Promise<any> {
   const name = opts?.contractName ?? PRIMARY_CONTRACT;
   const mod = await import(resolveContractModulePath(name));
   const Contract = mod.Contract;
@@ -111,8 +113,14 @@ export async function buildCompiledContract(opts?: {
     secret,
     opts?.secretForDeploy ? "deploy" : "privateState",
   );
-  return CompiledContract.withCompiledFileAssets(
-    CompiledContract.withWitnesses(CompiledContract.make(name, Contract), witnesses),
+  // Dynamic Compact modules don't share one CompiledContract generic.
+  const compiled = CompiledContract as unknown as {
+    make: (n: string, c: unknown) => unknown;
+    withWitnesses: (c: unknown, w: unknown) => unknown;
+    withCompiledFileAssets: (c: unknown, p: string) => unknown;
+  };
+  return compiled.withCompiledFileAssets(
+    compiled.withWitnesses(compiled.make(name, Contract), witnesses),
     zkConfigPath(name),
   );
 }

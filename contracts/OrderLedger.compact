@@ -32,6 +32,12 @@ export circuit recordOrder(
   buyer: Bytes<32>,
   amount: Uint<64>,
 ): [] {
+  const sk = merchantSecret();
+  const pk = persistentHash<Vector<2, Bytes<32>>>([pad(32, "ucp:merchant:v1"), sk]);
+  const empty = pad(32, "");
+  assert(signing_key_fpr != empty, "merchant not registered");
+  assert(pk == signing_key_fpr, "merchant signature invalid");
+
   last_order_id = disclose(orderId);
   last_item_hash = disclose(itemHash);
   last_buyer = disclose(buyer);

@@ -9,71 +9,41 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ShopRouteImport } from './routes/shop'
-import { Route as PrimerRouteImport } from './routes/primer'
-import { Route as MovesRouteImport } from './routes/moves'
-import { Route as MarketsRouteImport } from './routes/markets'
-import { Route as MarketRouteImport } from './routes/market'
-import { Route as JudgeRouteImport } from './routes/judge'
-import { Route as DeckRouteImport } from './routes/deck'
-import { Route as AgentNegotiationRouteImport } from './routes/agent-negotiation'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AgentNegotiationRouteImport } from './routes/agent-negotiation'
+import { Route as DeckRouteImport } from './routes/deck'
+import { Route as JudgeRouteImport } from './routes/judge'
+import { Route as MarketRouteImport } from './routes/market'
+import { Route as MarketsRouteImport } from './routes/markets'
+import { Route as MovesRouteImport } from './routes/moves'
+import { Route as PrimerRouteImport } from './routes/primer'
+import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ProductHandleRouteImport } from './routes/product.$handle'
-import { Route as ApiPublicUcpRecordOrderRouteImport } from './routes/api/public/ucp-record-order'
-import { Route as ApiPublicPurchaseRouteImport } from './routes/api/public/purchase'
-import { Route as ApiPublicPinRouteImport } from './routes/api/public/pin'
-import { Route as ApiPublicMusdcTransferRouteImport } from './routes/api/public/musdc-transfer'
-import { Route as ApiPublicMusdcFaucetRouteImport } from './routes/api/public/musdc-faucet'
-import { Route as ApiPublicMoveNftTransferRouteImport } from './routes/api/public/move-nft-transfer'
-import { Route as ApiPublicMoveNftMintRouteImport } from './routes/api/public/move-nft-mint'
-import { Route as ApiPublicMoveNftListRouteImport } from './routes/api/public/move-nft-list'
-import { Route as ApiPublicMoveNftCancelRouteImport } from './routes/api/public/move-nft-cancel'
-import { Route as ApiPublicMoveNftBuyRouteImport } from './routes/api/public/move-nft-buy'
-import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
-import { Route as ApiPublicArcRpcRouteImport } from './routes/api/public/arc-rpc'
-import { Route as ApiPublicAppendEntryRouteImport } from './routes/api/public/append-entry'
-import { Route as ApiPublicAp2AnchorRouteImport } from './routes/api/public/ap2-anchor'
 import { Route as ApiPublicAgentCardRouteImport } from './routes/api/public/agent-card'
-import { Route as ApiPublicX402ResourcesRouteImport } from './routes/api/public/x402/resources'
-import { Route as ApiPublicUcpSelfTestRouteImport } from './routes/api/public/ucp/self-test'
-import { Route as ApiPublicUcpDiscoveryRouteImport } from './routes/api/public/ucp/discovery'
-import { Route as ApiPublicErc1271AuthorizerRouteImport } from './routes/api/public/erc1271/authorizer'
-import { Route as ApiPublicAp2MandateRouteImport } from './routes/api/public/ap2/mandate'
+import { Route as ApiPublicAp2AnchorRouteImport } from './routes/api/public/ap2-anchor'
+import { Route as ApiPublicAppendEntryRouteImport } from './routes/api/public/append-entry'
+import { Route as ApiPublicArcRpcRouteImport } from './routes/api/public/arc-rpc'
+import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
+import { Route as ApiPublicMoveNftBuyRouteImport } from './routes/api/public/move-nft-buy'
+import { Route as ApiPublicMoveNftCancelRouteImport } from './routes/api/public/move-nft-cancel'
+import { Route as ApiPublicMoveNftListRouteImport } from './routes/api/public/move-nft-list'
+import { Route as ApiPublicMoveNftMintRouteImport } from './routes/api/public/move-nft-mint'
+import { Route as ApiPublicMoveNftTransferRouteImport } from './routes/api/public/move-nft-transfer'
+import { Route as ApiPublicMusdcFaucetRouteImport } from './routes/api/public/musdc-faucet'
+import { Route as ApiPublicMusdcTransferRouteImport } from './routes/api/public/musdc-transfer'
+import { Route as ApiPublicPinRouteImport } from './routes/api/public/pin'
+import { Route as ApiPublicPurchaseRouteImport } from './routes/api/public/purchase'
+import { Route as ApiPublicUcpRecordOrderRouteImport } from './routes/api/public/ucp-record-order'
 import { Route as ApiPublicA2aMessageRouteImport } from './routes/api/public/a2a/message'
+import { Route as ApiPublicAp2MandateRouteImport } from './routes/api/public/ap2/mandate'
+import { Route as ApiPublicErc1271AuthorizerRouteImport } from './routes/api/public/erc1271/authorizer'
+import { Route as ApiPublicUcpDiscoveryRouteImport } from './routes/api/public/ucp/discovery'
+import { Route as ApiPublicUcpSelfTestRouteImport } from './routes/api/public/ucp/self-test'
+import { Route as ApiPublicX402ResourcesRouteImport } from './routes/api/public/x402/resources'
 
-const ShopRoute = ShopRouteImport.update({
-  id: '/shop',
-  path: '/shop',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrimerRoute = PrimerRouteImport.update({
-  id: '/primer',
-  path: '/primer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MovesRoute = MovesRouteImport.update({
-  id: '/moves',
-  path: '/moves',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MarketsRoute = MarketsRouteImport.update({
-  id: '/markets',
-  path: '/markets',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MarketRoute = MarketRouteImport.update({
-  id: '/market',
-  path: '/market',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JudgeRoute = JudgeRouteImport.update({
-  id: '/judge',
-  path: '/judge',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DeckRoute = DeckRouteImport.update({
-  id: '/deck',
-  path: '/deck',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgentNegotiationRoute = AgentNegotiationRouteImport.update({
@@ -81,9 +51,39 @@ const AgentNegotiationRoute = AgentNegotiationRouteImport.update({
   path: '/agent-negotiation',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const DeckRoute = DeckRouteImport.update({
+  id: '/deck',
+  path: '/deck',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JudgeRoute = JudgeRouteImport.update({
+  id: '/judge',
+  path: '/judge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketRoute = MarketRouteImport.update({
+  id: '/market',
+  path: '/market',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketsRoute = MarketsRouteImport.update({
+  id: '/markets',
+  path: '/markets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MovesRoute = MovesRouteImport.update({
+  id: '/moves',
+  path: '/moves',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrimerRoute = PrimerRouteImport.update({
+  id: '/primer',
+  path: '/primer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductHandleRoute = ProductHandleRouteImport.update({
@@ -91,29 +91,49 @@ const ProductHandleRoute = ProductHandleRouteImport.update({
   path: '/product/$handle',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicUcpRecordOrderRoute = ApiPublicUcpRecordOrderRouteImport.update({
-  id: '/api/public/ucp-record-order',
-  path: '/api/public/ucp-record-order',
+const ApiPublicAgentCardRoute = ApiPublicAgentCardRouteImport.update({
+  id: '/api/public/agent-card',
+  path: '/api/public/agent-card',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicPurchaseRoute = ApiPublicPurchaseRouteImport.update({
-  id: '/api/public/purchase',
-  path: '/api/public/purchase',
+const ApiPublicAp2AnchorRoute = ApiPublicAp2AnchorRouteImport.update({
+  id: '/api/public/ap2-anchor',
+  path: '/api/public/ap2-anchor',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicPinRoute = ApiPublicPinRouteImport.update({
-  id: '/api/public/pin',
-  path: '/api/public/pin',
+const ApiPublicAppendEntryRoute = ApiPublicAppendEntryRouteImport.update({
+  id: '/api/public/append-entry',
+  path: '/api/public/append-entry',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicMusdcTransferRoute = ApiPublicMusdcTransferRouteImport.update({
-  id: '/api/public/musdc-transfer',
-  path: '/api/public/musdc-transfer',
+const ApiPublicArcRpcRoute = ApiPublicArcRpcRouteImport.update({
+  id: '/api/public/arc-rpc',
+  path: '/api/public/arc-rpc',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicMusdcFaucetRoute = ApiPublicMusdcFaucetRouteImport.update({
-  id: '/api/public/musdc-faucet',
-  path: '/api/public/musdc-faucet',
+const ApiPublicCatalogRoute = ApiPublicCatalogRouteImport.update({
+  id: '/api/public/catalog',
+  path: '/api/public/catalog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicMoveNftBuyRoute = ApiPublicMoveNftBuyRouteImport.update({
+  id: '/api/public/move-nft-buy',
+  path: '/api/public/move-nft-buy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicMoveNftCancelRoute = ApiPublicMoveNftCancelRouteImport.update({
+  id: '/api/public/move-nft-cancel',
+  path: '/api/public/move-nft-cancel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicMoveNftListRoute = ApiPublicMoveNftListRouteImport.update({
+  id: '/api/public/move-nft-list',
+  path: '/api/public/move-nft-list',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicMoveNftMintRoute = ApiPublicMoveNftMintRouteImport.update({
+  id: '/api/public/move-nft-mint',
+  path: '/api/public/move-nft-mint',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicMoveNftTransferRoute =
@@ -122,64 +142,39 @@ const ApiPublicMoveNftTransferRoute =
     path: '/api/public/move-nft-transfer',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicMoveNftMintRoute = ApiPublicMoveNftMintRouteImport.update({
-  id: '/api/public/move-nft-mint',
-  path: '/api/public/move-nft-mint',
+const ApiPublicMusdcFaucetRoute = ApiPublicMusdcFaucetRouteImport.update({
+  id: '/api/public/musdc-faucet',
+  path: '/api/public/musdc-faucet',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicMoveNftListRoute = ApiPublicMoveNftListRouteImport.update({
-  id: '/api/public/move-nft-list',
-  path: '/api/public/move-nft-list',
+const ApiPublicMusdcTransferRoute = ApiPublicMusdcTransferRouteImport.update({
+  id: '/api/public/musdc-transfer',
+  path: '/api/public/musdc-transfer',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicMoveNftCancelRoute = ApiPublicMoveNftCancelRouteImport.update({
-  id: '/api/public/move-nft-cancel',
-  path: '/api/public/move-nft-cancel',
+const ApiPublicPinRoute = ApiPublicPinRouteImport.update({
+  id: '/api/public/pin',
+  path: '/api/public/pin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicMoveNftBuyRoute = ApiPublicMoveNftBuyRouteImport.update({
-  id: '/api/public/move-nft-buy',
-  path: '/api/public/move-nft-buy',
+const ApiPublicPurchaseRoute = ApiPublicPurchaseRouteImport.update({
+  id: '/api/public/purchase',
+  path: '/api/public/purchase',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicCatalogRoute = ApiPublicCatalogRouteImport.update({
-  id: '/api/public/catalog',
-  path: '/api/public/catalog',
+const ApiPublicUcpRecordOrderRoute = ApiPublicUcpRecordOrderRouteImport.update({
+  id: '/api/public/ucp-record-order',
+  path: '/api/public/ucp-record-order',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicArcRpcRoute = ApiPublicArcRpcRouteImport.update({
-  id: '/api/public/arc-rpc',
-  path: '/api/public/arc-rpc',
+const ApiPublicA2aMessageRoute = ApiPublicA2aMessageRouteImport.update({
+  id: '/api/public/a2a/message',
+  path: '/api/public/a2a/message',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicAppendEntryRoute = ApiPublicAppendEntryRouteImport.update({
-  id: '/api/public/append-entry',
-  path: '/api/public/append-entry',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicAp2AnchorRoute = ApiPublicAp2AnchorRouteImport.update({
-  id: '/api/public/ap2-anchor',
-  path: '/api/public/ap2-anchor',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicAgentCardRoute = ApiPublicAgentCardRouteImport.update({
-  id: '/api/public/agent-card',
-  path: '/api/public/agent-card',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicX402ResourcesRoute = ApiPublicX402ResourcesRouteImport.update({
-  id: '/api/public/x402/resources',
-  path: '/api/public/x402/resources',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicUcpSelfTestRoute = ApiPublicUcpSelfTestRouteImport.update({
-  id: '/api/public/ucp/self-test',
-  path: '/api/public/ucp/self-test',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicUcpDiscoveryRoute = ApiPublicUcpDiscoveryRouteImport.update({
-  id: '/api/public/ucp/discovery',
-  path: '/api/public/ucp/discovery',
+const ApiPublicAp2MandateRoute = ApiPublicAp2MandateRouteImport.update({
+  id: '/api/public/ap2/mandate',
+  path: '/api/public/ap2/mandate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicErc1271AuthorizerRoute =
@@ -188,14 +183,19 @@ const ApiPublicErc1271AuthorizerRoute =
     path: '/api/public/erc1271/authorizer',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicAp2MandateRoute = ApiPublicAp2MandateRouteImport.update({
-  id: '/api/public/ap2/mandate',
-  path: '/api/public/ap2/mandate',
+const ApiPublicUcpDiscoveryRoute = ApiPublicUcpDiscoveryRouteImport.update({
+  id: '/api/public/ucp/discovery',
+  path: '/api/public/ucp/discovery',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicA2aMessageRoute = ApiPublicA2aMessageRouteImport.update({
-  id: '/api/public/a2a/message',
-  path: '/api/public/a2a/message',
+const ApiPublicUcpSelfTestRoute = ApiPublicUcpSelfTestRouteImport.update({
+  id: '/api/public/ucp/self-test',
+  path: '/api/public/ucp/self-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicX402ResourcesRoute = ApiPublicX402ResourcesRouteImport.update({
+  id: '/api/public/x402/resources',
+  path: '/api/public/x402/resources',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -437,53 +437,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/shop': {
-      id: '/shop'
-      path: '/shop'
-      fullPath: '/shop'
-      preLoaderRoute: typeof ShopRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/primer': {
-      id: '/primer'
-      path: '/primer'
-      fullPath: '/primer'
-      preLoaderRoute: typeof PrimerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/moves': {
-      id: '/moves'
-      path: '/moves'
-      fullPath: '/moves'
-      preLoaderRoute: typeof MovesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/markets': {
-      id: '/markets'
-      path: '/markets'
-      fullPath: '/markets'
-      preLoaderRoute: typeof MarketsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/market': {
-      id: '/market'
-      path: '/market'
-      fullPath: '/market'
-      preLoaderRoute: typeof MarketRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/judge': {
-      id: '/judge'
-      path: '/judge'
-      fullPath: '/judge'
-      preLoaderRoute: typeof JudgeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/deck': {
-      id: '/deck'
-      path: '/deck'
-      fullPath: '/deck'
-      preLoaderRoute: typeof DeckRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agent-negotiation': {
@@ -493,11 +451,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgentNegotiationRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/deck': {
+      id: '/deck'
+      path: '/deck'
+      fullPath: '/deck'
+      preLoaderRoute: typeof DeckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/judge': {
+      id: '/judge'
+      path: '/judge'
+      fullPath: '/judge'
+      preLoaderRoute: typeof JudgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/market': {
+      id: '/market'
+      path: '/market'
+      fullPath: '/market'
+      preLoaderRoute: typeof MarketRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/markets': {
+      id: '/markets'
+      path: '/markets'
+      fullPath: '/markets'
+      preLoaderRoute: typeof MarketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moves': {
+      id: '/moves'
+      path: '/moves'
+      fullPath: '/moves'
+      preLoaderRoute: typeof MovesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/primer': {
+      id: '/primer'
+      path: '/primer'
+      fullPath: '/primer'
+      preLoaderRoute: typeof PrimerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/product/$handle': {
@@ -507,95 +507,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductHandleRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/ucp-record-order': {
-      id: '/api/public/ucp-record-order'
-      path: '/api/public/ucp-record-order'
-      fullPath: '/api/public/ucp-record-order'
-      preLoaderRoute: typeof ApiPublicUcpRecordOrderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/purchase': {
-      id: '/api/public/purchase'
-      path: '/api/public/purchase'
-      fullPath: '/api/public/purchase'
-      preLoaderRoute: typeof ApiPublicPurchaseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/pin': {
-      id: '/api/public/pin'
-      path: '/api/public/pin'
-      fullPath: '/api/public/pin'
-      preLoaderRoute: typeof ApiPublicPinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/musdc-transfer': {
-      id: '/api/public/musdc-transfer'
-      path: '/api/public/musdc-transfer'
-      fullPath: '/api/public/musdc-transfer'
-      preLoaderRoute: typeof ApiPublicMusdcTransferRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/musdc-faucet': {
-      id: '/api/public/musdc-faucet'
-      path: '/api/public/musdc-faucet'
-      fullPath: '/api/public/musdc-faucet'
-      preLoaderRoute: typeof ApiPublicMusdcFaucetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/move-nft-transfer': {
-      id: '/api/public/move-nft-transfer'
-      path: '/api/public/move-nft-transfer'
-      fullPath: '/api/public/move-nft-transfer'
-      preLoaderRoute: typeof ApiPublicMoveNftTransferRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/move-nft-mint': {
-      id: '/api/public/move-nft-mint'
-      path: '/api/public/move-nft-mint'
-      fullPath: '/api/public/move-nft-mint'
-      preLoaderRoute: typeof ApiPublicMoveNftMintRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/move-nft-list': {
-      id: '/api/public/move-nft-list'
-      path: '/api/public/move-nft-list'
-      fullPath: '/api/public/move-nft-list'
-      preLoaderRoute: typeof ApiPublicMoveNftListRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/move-nft-cancel': {
-      id: '/api/public/move-nft-cancel'
-      path: '/api/public/move-nft-cancel'
-      fullPath: '/api/public/move-nft-cancel'
-      preLoaderRoute: typeof ApiPublicMoveNftCancelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/move-nft-buy': {
-      id: '/api/public/move-nft-buy'
-      path: '/api/public/move-nft-buy'
-      fullPath: '/api/public/move-nft-buy'
-      preLoaderRoute: typeof ApiPublicMoveNftBuyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/catalog': {
-      id: '/api/public/catalog'
-      path: '/api/public/catalog'
-      fullPath: '/api/public/catalog'
-      preLoaderRoute: typeof ApiPublicCatalogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/arc-rpc': {
-      id: '/api/public/arc-rpc'
-      path: '/api/public/arc-rpc'
-      fullPath: '/api/public/arc-rpc'
-      preLoaderRoute: typeof ApiPublicArcRpcRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/append-entry': {
-      id: '/api/public/append-entry'
-      path: '/api/public/append-entry'
-      fullPath: '/api/public/append-entry'
-      preLoaderRoute: typeof ApiPublicAppendEntryRouteImport
+    '/api/public/agent-card': {
+      id: '/api/public/agent-card'
+      path: '/api/public/agent-card'
+      fullPath: '/api/public/agent-card'
+      preLoaderRoute: typeof ApiPublicAgentCardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/ap2-anchor': {
@@ -605,39 +521,102 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicAp2AnchorRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/agent-card': {
-      id: '/api/public/agent-card'
-      path: '/api/public/agent-card'
-      fullPath: '/api/public/agent-card'
-      preLoaderRoute: typeof ApiPublicAgentCardRouteImport
+    '/api/public/append-entry': {
+      id: '/api/public/append-entry'
+      path: '/api/public/append-entry'
+      fullPath: '/api/public/append-entry'
+      preLoaderRoute: typeof ApiPublicAppendEntryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/x402/resources': {
-      id: '/api/public/x402/resources'
-      path: '/api/public/x402/resources'
-      fullPath: '/api/public/x402/resources'
-      preLoaderRoute: typeof ApiPublicX402ResourcesRouteImport
+    '/api/public/arc-rpc': {
+      id: '/api/public/arc-rpc'
+      path: '/api/public/arc-rpc'
+      fullPath: '/api/public/arc-rpc'
+      preLoaderRoute: typeof ApiPublicArcRpcRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/ucp/self-test': {
-      id: '/api/public/ucp/self-test'
-      path: '/api/public/ucp/self-test'
-      fullPath: '/api/public/ucp/self-test'
-      preLoaderRoute: typeof ApiPublicUcpSelfTestRouteImport
+    '/api/public/catalog': {
+      id: '/api/public/catalog'
+      path: '/api/public/catalog'
+      fullPath: '/api/public/catalog'
+      preLoaderRoute: typeof ApiPublicCatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/ucp/discovery': {
-      id: '/api/public/ucp/discovery'
-      path: '/api/public/ucp/discovery'
-      fullPath: '/api/public/ucp/discovery'
-      preLoaderRoute: typeof ApiPublicUcpDiscoveryRouteImport
+    '/api/public/move-nft-buy': {
+      id: '/api/public/move-nft-buy'
+      path: '/api/public/move-nft-buy'
+      fullPath: '/api/public/move-nft-buy'
+      preLoaderRoute: typeof ApiPublicMoveNftBuyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/erc1271/authorizer': {
-      id: '/api/public/erc1271/authorizer'
-      path: '/api/public/erc1271/authorizer'
-      fullPath: '/api/public/erc1271/authorizer'
-      preLoaderRoute: typeof ApiPublicErc1271AuthorizerRouteImport
+    '/api/public/move-nft-cancel': {
+      id: '/api/public/move-nft-cancel'
+      path: '/api/public/move-nft-cancel'
+      fullPath: '/api/public/move-nft-cancel'
+      preLoaderRoute: typeof ApiPublicMoveNftCancelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/move-nft-list': {
+      id: '/api/public/move-nft-list'
+      path: '/api/public/move-nft-list'
+      fullPath: '/api/public/move-nft-list'
+      preLoaderRoute: typeof ApiPublicMoveNftListRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/move-nft-mint': {
+      id: '/api/public/move-nft-mint'
+      path: '/api/public/move-nft-mint'
+      fullPath: '/api/public/move-nft-mint'
+      preLoaderRoute: typeof ApiPublicMoveNftMintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/move-nft-transfer': {
+      id: '/api/public/move-nft-transfer'
+      path: '/api/public/move-nft-transfer'
+      fullPath: '/api/public/move-nft-transfer'
+      preLoaderRoute: typeof ApiPublicMoveNftTransferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/musdc-faucet': {
+      id: '/api/public/musdc-faucet'
+      path: '/api/public/musdc-faucet'
+      fullPath: '/api/public/musdc-faucet'
+      preLoaderRoute: typeof ApiPublicMusdcFaucetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/musdc-transfer': {
+      id: '/api/public/musdc-transfer'
+      path: '/api/public/musdc-transfer'
+      fullPath: '/api/public/musdc-transfer'
+      preLoaderRoute: typeof ApiPublicMusdcTransferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/pin': {
+      id: '/api/public/pin'
+      path: '/api/public/pin'
+      fullPath: '/api/public/pin'
+      preLoaderRoute: typeof ApiPublicPinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/purchase': {
+      id: '/api/public/purchase'
+      path: '/api/public/purchase'
+      fullPath: '/api/public/purchase'
+      preLoaderRoute: typeof ApiPublicPurchaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ucp-record-order': {
+      id: '/api/public/ucp-record-order'
+      path: '/api/public/ucp-record-order'
+      fullPath: '/api/public/ucp-record-order'
+      preLoaderRoute: typeof ApiPublicUcpRecordOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/a2a/message': {
+      id: '/api/public/a2a/message'
+      path: '/api/public/a2a/message'
+      fullPath: '/api/public/a2a/message'
+      preLoaderRoute: typeof ApiPublicA2aMessageRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/ap2/mandate': {
@@ -647,11 +626,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicAp2MandateRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/a2a/message': {
-      id: '/api/public/a2a/message'
-      path: '/api/public/a2a/message'
-      fullPath: '/api/public/a2a/message'
-      preLoaderRoute: typeof ApiPublicA2aMessageRouteImport
+    '/api/public/erc1271/authorizer': {
+      id: '/api/public/erc1271/authorizer'
+      path: '/api/public/erc1271/authorizer'
+      fullPath: '/api/public/erc1271/authorizer'
+      preLoaderRoute: typeof ApiPublicErc1271AuthorizerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ucp/discovery': {
+      id: '/api/public/ucp/discovery'
+      path: '/api/public/ucp/discovery'
+      fullPath: '/api/public/ucp/discovery'
+      preLoaderRoute: typeof ApiPublicUcpDiscoveryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ucp/self-test': {
+      id: '/api/public/ucp/self-test'
+      path: '/api/public/ucp/self-test'
+      fullPath: '/api/public/ucp/self-test'
+      preLoaderRoute: typeof ApiPublicUcpSelfTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/x402/resources': {
+      id: '/api/public/x402/resources'
+      path: '/api/public/x402/resources'
+      fullPath: '/api/public/x402/resources'
+      preLoaderRoute: typeof ApiPublicX402ResourcesRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

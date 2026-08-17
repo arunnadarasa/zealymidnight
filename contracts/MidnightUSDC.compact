@@ -2,9 +2,9 @@ pragma language_version 0.23;
 import CompactStandardLibrary;
 
 // Experimental mUSDC mimic — no peg, no value. Never deploy to Mainnet.
-// Insert-only ledgers: Undeployed dust wallet panics on map key overwrites
-// (see Cursor Input — MoveNft insert-only lesson). Transfer mints a credit
-// row keyed by nonce; faucet credits the signer once.
+// Insert-only ledgers: Undeployed dust wallet panics on map key overwrites.
+// Transfer appends a credit row keyed by nonce; faucet credits the signer once.
+// Access control: transfer requires faucet_claimed.member(fromPk) — not an empty-hash check.
 
 export ledger credits: Map<Bytes<32>, Uint<64>>;
 export ledger credit_to: Map<Bytes<32>, Bytes<32>>;
@@ -18,7 +18,6 @@ export circuit faucet(): [] {
   const pk = persistentHash<Vector<2, Bytes<32>>>([pad(32, "musdc:signer:v1"), sk]);
   assert(!faucet_claimed.member(disclose(pk)), "already claimed");
   faucet_claimed.insert(disclose(pk));
-  // One-time treasury credit keyed by signer pk (never updated).
   credits.insert(disclose(pk), disclose(10000000 as Uint<64>));
   credit_to.insert(disclose(pk), disclose(pk));
 }
@@ -27,10 +26,8 @@ export circuit transfer(to: Bytes<32>, amount: Uint<64>, nonce: Bytes<32>): [] {
   const sk = localSecretKey();
   const fromPk = persistentHash<Vector<2, Bytes<32>>>([pad(32, "musdc:signer:v1"), sk]);
   assert(!spent_nonces.member(disclose(nonce)), "nonce spent");
-  // Demo settle: append-only credit to recipient. No balances[from] overwrite.
   assert(amount > 0 as Uint<64>, "amount zero");
-  // Keep fromPk in-circuit so the witness binds the genesis signer.
-  assert(fromPk != pad(32, ""), "bad signer");
+  assert(faucet_claimed.member(disclose(fromPk)), "signer");
   spent_nonces.insert(disclose(nonce));
   credits.insert(disclose(nonce), disclose(amount));
   credit_to.insert(disclose(nonce), disclose(to));

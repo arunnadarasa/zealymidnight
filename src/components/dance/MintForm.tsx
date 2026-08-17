@@ -199,7 +199,7 @@ export function MintForm() {
       </label>
 
       <MetadataPreview
-        token={token === "cirBTC" ? "cirBTC" : token === "EURC" ? "EURC" : "USDC"}
+        token={token}
         amount={tokenAmount}
         cid={cid || null}
         pinningEnabled={pinCfg?.pinningEnabled ?? false}

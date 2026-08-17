@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+Cursor agents working on Midnight Local Undeployed: follow [`.cursor/skills/midnight-undeployed/SKILL.md`](.cursor/skills/midnight-undeployed/SKILL.md).

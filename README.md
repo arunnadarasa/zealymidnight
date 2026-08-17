@@ -1,5 +1,7 @@
 # StreetRail — Midnight Local Undeployed
 
+This project is built on the Midnight Network.
+
 **Repository:** [github.com/arunnadarasa/zealymidnight](https://github.com/arunnadarasa/zealymidnight)  
 **Network:** Midnight **Local Undeployed** (Docker node + indexer + proof server)  
 **Contracts:** five Compact programs (`pragma language_version 0.23`)  
@@ -84,10 +86,10 @@ UI catalog: `src/lib/contracts.ts` (`CONTRACTS` length = **5**).
 | Contract | Off-chain (witness) | On ledger (disclosed / public) |
 | --- | --- | --- |
 | MoveRegistry | `localSecretKey()` | `persistentHash` author commitment + CID/message |
-| MoveNft | minter secret; owner label hashed as `sha256("movenft:owner:v1:" + label)` | Insert-only `owners` / `listed_price`; append-only `sales` with fresh ids |
-| MandateVault | buyer secret | `ap2:buyer:v1` public key derived in-circuit |
-| OrderLedger | merchant secret | `ucp:merchant:v1` fingerprint |
-| MidnightUSDC | signer secret | Append-only `credits` / `credit_to` by nonce; `spent_nonces`; one-time `faucet_claimed` |
+| MoveNft | minter secret derives `movenft:minter:v1` pk; first call stores `minter_pk`, later `assert(pk == minter_pk)`. Owner label hashed as `sha256("movenft:owner:v1:" + label)` | Insert-only `owners` / `listed_price`; append-only `sales` with fresh ids |
+| MandateVault | buyer secret | `ap2:buyer:v1` public key derived in-circuit; `assert(pk == buyer)` |
+| OrderLedger | merchant secret | `recordSigningKey` stores `ucp:merchant:v1` fingerprint; `recordOrder` requires `pk == signing_key_fpr` |
+| MidnightUSDC | signer secret | Append-only `credits` / `credit_to` by nonce; `spent_nonces`; `transfer` requires `faucet_claimed.member(fromPk)` (not an empty-hash check) |
 
 ### MoveNft circuits
 
@@ -108,7 +110,7 @@ Undeployed dust wallet panics when a circuit **updates an existing `Map` key** (
 | Circuit | Effect |
 | --- | --- |
 | `faucet` | Once per signer pk: insert credit + `faucet_claimed` |
-| `transfer` | Require fresh `nonce`; `spent_nonces.insert`; `credits.insert(nonce, amount)`; `credit_to.insert(nonce, to)` |
+| `transfer` | Require `faucet_claimed.member(fromPk)` and a fresh `nonce`; append credit rows |
 
 Demo balances are reconstructed off-chain / in UI; the ledger is an append-only credit log.
 
@@ -161,12 +163,15 @@ Useful docs:
 
 ## Quick start
 
+Public npm only — no Lovable registry or Supabase project is required. The Midnight Undeployed path does not use `SUPABASE_URL` / `SUPABASE_PUBLISHABLE_KEY`.
+
 ```bash
 git clone https://github.com/arunnadarasa/zealymidnight.git
 cd zealymidnight
 bun install
 cp .env.example .env   # if present; deploy also writes addresses
 bun run compile        # compact → artefacts → docker up → deploy
+bun run typecheck
 bun run dev            # http://127.0.0.1:8080/
 ```
 
@@ -275,6 +280,7 @@ Never mix new verifier keys with an old LevelDB or old on-chain state (**196**).
 | `bun run midnight:up` / `down` / `status` | Local Undeployed stack |
 | `bun run midnight:deploy` | Deploy genesis seed `…0002`; reset move-nft local state |
 | `bun run compile` | compile → artefacts → up → deploy |
+| `bun run typecheck` | `tsc --noEmit` |
 | `bun run dev` | App on `:8080` |
 | `bun scripts/z-check.mjs` | Exclusive e2e mint → list → buy (`E2E_OK`) |
 | `bun scripts/debug-musdc-transfer.mjs` | Two sequential mUSDC transfers (sanity before A2H) |

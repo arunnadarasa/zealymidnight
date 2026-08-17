@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { createHash } from "node:crypto";
 import { z } from "zod";
 import { DEMO_SCALE, MIDNIGHT_NETWORK } from "@/lib/agent-card";
 import {
@@ -42,6 +43,10 @@ const PaymentSchema = z.object({
   nonce: z.string().max(100).optional(),
   scheme: z.string().optional(),
 });
+
+function treasuryPayToHex(label: string): string {
+  return createHash("sha256").update(label).digest("hex");
+}
 
 function requiredAtomic(
   listedAmount: number,
@@ -151,7 +156,10 @@ export const Route = createFileRoute("/api/public/purchase")({
           if (order.serverSettle || !paymentHeader) {
             const { musdcFaucet, musdcTransfer } = await import("@/lib/musdc.server");
             await musdcFaucet().catch(() => {});
-            const settled = await musdcTransfer({ amountAtomic: atomic.toString() });
+            const settled = await musdcTransfer({
+              toHex: treasuryPayToHex(payTo),
+              amountAtomic: atomic.toString(),
+            });
             txHash = settled.midnightTxHash;
             from = settled.fromPk;
           } else {

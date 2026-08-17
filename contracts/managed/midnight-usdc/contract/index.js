@@ -96,28 +96,28 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('transfer',
                                      'argument 1 (as invoked from Typescript)',
-                                     'MidnightUSDC.compact line 26 char 1',
+                                     'MidnightUSDC.compact line 25 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(to_0.buffer instanceof ArrayBuffer && to_0.BYTES_PER_ELEMENT === 1 && to_0.length === 32)) {
           __compactRuntime.typeError('transfer',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'MidnightUSDC.compact line 26 char 1',
+                                     'MidnightUSDC.compact line 25 char 1',
                                      'Bytes<32>',
                                      to_0)
         }
         if (!(typeof(amount_0) === 'bigint' && amount_0 >= 0n && amount_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('transfer',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'MidnightUSDC.compact line 26 char 1',
+                                     'MidnightUSDC.compact line 25 char 1',
                                      'Uint<0..18446744073709551616>',
                                      amount_0)
         }
         if (!(nonce_0.buffer instanceof ArrayBuffer && nonce_0.BYTES_PER_ELEMENT === 1 && nonce_0.length === 32)) {
           __compactRuntime.typeError('transfer',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'MidnightUSDC.compact line 26 char 1',
+                                     'MidnightUSDC.compact line 25 char 1',
                                      'Bytes<32>',
                                      nonce_0)
         }
@@ -350,9 +350,23 @@ export class Contract {
                                                                                                    result: undefined } }]).value),
                             'nonce spent');
     __compactRuntime.assert(amount_0 > 0n, 'amount zero');
-    __compactRuntime.assert(!this._equal_0(fromPk_0,
-                                           new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
-                            'bad signer');
+    __compactRuntime.assert(_descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
+                                                                                      partialProofData,
+                                                                                      [
+                                                                                       { dup: { n: 0 } },
+                                                                                       { idx: { cached: false,
+                                                                                                pushPath: false,
+                                                                                                path: [
+                                                                                                       { tag: 'value',
+                                                                                                         value: { value: _descriptor_7.toValue(2n),
+                                                                                                                  alignment: _descriptor_7.alignment() } }] } },
+                                                                                       { push: { storage: false,
+                                                                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(fromPk_0),
+                                                                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
+                                                                                       'member',
+                                                                                       { popeq: { cached: true,
+                                                                                                  result: undefined } }]).value),
+                            'signer');
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
@@ -404,10 +418,6 @@ export class Contract {
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     return [];
-  }
-  _equal_0(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
-    return true;
   }
 }
 export function ledger(stateOrChargedState) {
